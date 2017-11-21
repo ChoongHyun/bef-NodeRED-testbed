@@ -162,11 +162,9 @@ app.get(restrictUrl, function(req,res,next){
     console.log(cookie['bef-login-token']);
     console.log('===============cookie======================');
     console.log('===============headers======================');
-    console.log(req.getHeaders.bef-login-token);
     console.log(req.get('bef-login-token'));
     console.log(req.getHeaders('bef-login-token'));
     console.log(req.getHeaders['bef-login-token']);
-    console.log(req.getHeader.bef-login-token);
     console.log(req.get('bef-login-token'));
     console.log(req.getHeader('bef-login-token'));
     console.log(req.getHeader['bef-login-token']);
