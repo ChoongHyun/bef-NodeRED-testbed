@@ -123,14 +123,9 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 // custom 된 JSON 형태도 허용할 경우
 app.use(bodyParser.json({ type: 'application/*+json' }));
-// cookie 받는 api (portal에서 cookie 보냄)
-app.post('/cookie', function(req,res){
-    settings.adminAuth.saveToken(req.body.name, req.body.token);
-    res.sendStatus(200);
-    res.end();
-});
 // Cookie 삭제 api
 app.delete('/cookie', function(req,res){
+    settings.adminAuth.removeUserRole();
     // cookie 이름 bef-login-token 만 삭제
     res.clearCookie('bef-login-token');
     res.sendStatus(204);
@@ -143,12 +138,12 @@ var restrictUrl = [];
 // restrictUrl.push('*');
 restrictUrl.push('/');
 // restrictUrl.push('*/settings');
-restrictUrl.push('*/auth/*');
+// restrictUrl.push('*/auth/*');
 //restrictUrl.push('*/flows');
 // restrictUrl.push('*/flow');
 // restrictUrl.push('*/flow/*');
-restrictUrl.push('*/nodes');
-restrictUrl.push('*/nodes/*');
+// restrictUrl.push('*/nodes');
+// restrictUrl.push('*/nodes/*');
 // request 권한 ( interceptor 라고 생각함 )
 app.get(restrictUrl, function(req,res,next){
     // get Cookie
@@ -159,23 +154,17 @@ app.get(restrictUrl, function(req,res,next){
     var appParam = req.query['appId'];
     // nodeRedLocalURL
     var nodeRedUrl = req.get('host');
-    var tokenValue = settings.adminAuth.getToken();
-    // root '/'로 들어오는 path에 applicationId 없을경우 portal 호출
-    if( tokenValue.name != null && tokenValue.value != null ){
-        cookie = settings.adminAuth.getToken();
-        res.setHeader( 'Set-Cookie', tokenValue.name + '=' + tokenValue.value );
-        settings.adminAuth.removeToken();
+
+    if( cookie == null || cookie['bef-login-token'] == null || appParam == null ){
+        settings.adminAuth.getCookie(path, nodeRedUrl,res, next );
+    }else{
+        // token 값 설정
+        var token = cookie['bef-login-token'];
+        // cookie 설정
+        res.cookie('Set-Cookie', 'bef-login-token=' + token);
+        // cookie validate 체크
+        settings.adminAuth.getValidation( appParam, token, nodeRedUrl, res, next );
     }
-    // cookie 값 유무
-    if( (cookie != null && (cookie['bef-login-token'] != null || cookie.name == 'bef-login-token'))
-        || (Object.keys(cookie).length > 0) ){
-        // token valid 체크
-        settings.adminAuth.getValidation( cookie, nodeRedUrl, appParam, path, res, next );
-     }else{
-        // portal 에서 token 값 가져오기
-        settings.adminAuth.getCookie( path, nodeRedUrl, res, next );
-    }
-    // next();
 });
 
 /**
@@ -202,21 +191,18 @@ app.use(settings.httpNodeRoot,RED.httpNode);
 // 401 page error 페이지로 넘기는 처리 방법
 app.get( ['/noauth','auth/login'], function(req,res){
     res.status(401);
-    // res.status(401);
     res.sendFile('/usr/src/node-red/HTML/401page.html');
     // res.sendFile('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/HTML/401page.html');
 });
 // 에러 페이지
 app.get('/error', function(req,res){
     res.status(500);
-    // res.status(500);
     res.sendFile('/usr/src/node-red/HTML/500page.html');
     // res.sendFile('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/HTML/500page.html');
 });
 // 404 page error 페이지로 넘기는 처리 방법
 app.get('*', function(req,res){
     res.status(404);
-    // res.status(404);
     res.sendFile('/usr/src/node-red/HTML/404page.html');
     // res.sendFile('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/HTML/404page.html');
 });
@@ -230,9 +216,7 @@ app.use(function (err, req, res, next) {
 /**
  * Server
  */
-// http
-// server.listen(1880);
-// https
+// listen
 server.listen(1880);
 // Start the runtime
 // node-red document 가면 RED runtime api 참고
