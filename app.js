@@ -41,11 +41,11 @@ var settings = {
     // 실행 된 node 하위 경로
     httpNodeRoot: '/',
     // 해당 node-red의 settings.js를 이용 경로 설정 & 저장 경로
-    // userDir:'/usr/src/node-red/',
-    userDir:'/Users/choong/Downloads/NodeRED/save/',
+    userDir:'/usr/src/node-red/',
+    // userDir:'/Users/choong/Downloads/NodeRED/save/',
     // custom node
-    // nodesDir: '/usr/src/node-red/BEF-UI/custom/node/',
-    nodesDir: '/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-UI/custom/node/',
+    nodesDir: '/usr/src/node-red/BEF-UI/custom/node/',
+    // nodesDir: '/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-UI/custom/node/',
     // admin auth
     adminAuth: require('./BEF-server/bef-admin-auth.js'),
     // category 순서
