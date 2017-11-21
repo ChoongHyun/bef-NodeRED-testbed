@@ -11,6 +11,8 @@ var request = require('request');
 var user = null;
 var readWriteRole = { username: 'BEF', permissions: '*' };
 var readOnlyRole = { anonymous: true, permissions: 'read' };
+var portalTokenName = null;
+var portalTokenValue = null;
 
 var portalUrl = 'https://www.bef.exntu.net/app/designer/sso?url=';
 // var portalUrl = 'http://192.168.1.20:4200/app/designer/sso?url=';
@@ -26,7 +28,7 @@ module.exports = {
         response.redirect(302, portalUrl + nodeRedUrl );
     },
     // cookie validation
-    getValidation: function( appParam, token, nodeRedUrl, response, next ) {
+    getValidation: function( appParam, name, token ) {
         // portal 에 아래 값 형태로 body에 적용:
         /*
          {
@@ -34,38 +36,9 @@ module.exports = {
              "token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWJfc3JjIjoiTkFUSVZFIiwicmVhZF93cyI6W10sInN1YiI6ImFkbWluMDEiLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlzcyI6InNrdC5wbGF5Iiwib3duZWRfYXBwIjpbMjc4LDI3NSwyNzcsMjc2LDI2OCwyNjksMjY0LDI2NiwyNjUsMjYwLDI2MSwyMTcsMzM4LDIxNiwzMzcsMjE5LDIxOCwxNzksMjEyLDMzMywyMTUsMzM2LDIxNCwzMzUsMTc2LDE3NSwxNzgsMjExLDMzMiwxNzcsMjEwLDMzMSwxNzIsMTc0LDE3MywxNzAsMjA5LDIwNiwyMDgsMjA3LDE2OSwxNjgsMjAxLDI4OSwzMjUsMjAzLDE2NSwyODYsMjg1LDIwMCwyODgsMjgyLDI4NCwyODMsMjM1LDIzNCwyMzcsMjM2LDE5OCwyMzEsMTk3LDIzMCwyMzMsMTk5LDIzMiwxOTQsMTkzLDE5NiwxOTUsMTkwLDE5MiwxOTEsMjI4LDIyNywyMjksMjI0LDIyMywyMjUsMTg3LDIyMCwxODYsMTg5LDIyMiwxODgsMjIxLDE4MywxODIsMTg1LDE4NCwxODEsMTgwLDI1NywyNTYsMjU4LDI1MiwyNTUsMjUxLDI0NiwyNDUsMjQ3LDI0MiwyNDQsMjQzXSwid3JpdGVfd3MiOls3MF0sIm93bmVkX3dzIjpbMTA0LDEwNSwxMDYsMTA3LDEwOCwxMTIsMTEzLDExNCwxMTUsMTE2LDExNywxMTgsMTE5LDExMCwxMTEsMTA5LDcxLDcyLDczLDc0LDc5LDc1LDc2LDc3LDc4LDY5LDY1LDEyMywxMjQsMTI1LDEyNiwxMjcsOTIsMTIwLDEyMSwxMjIsODBdLCJ3cml0ZV9hcHAiOlsxNzFdLCJzdWJfdWlkIjo1LCJzdWJfdHlwZSI6IlVTRVIiLCJyZWFkX2FwcCI6W10sImV4cCI6MTUwNzg1ODQ5NCwiaWF0IjoxNTA3NzcyMDk0LCJqdGkiOiI2ODIifQ.JnjnYyXmPkLaCxlf9iHuHnHIJeK6G1o5zTsNJl6lQ4MLDQkY9wXFh-fr8bnH_rAIz6rh_s83ZiN_HtekVvlsuA"
          }
          */
-        var options = {
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            json: {
-                'name': 'bef-login-token',
-                'token': token
-            }
-        }
-        // POST 로 cookie 값 체크 (portal 에서 return 은 boolean 값)
-        request.post(validationUrl + '/' + appParam + '?url=' + nodeRedUrl, options, function (error, res, body) {
-            // server check
-            if (error != null) {
-                return errorPage(response);
-            }
-            console.log('===============body======================');
-            console.log(body);
-            console.log('===============body======================');
-            // svc 에서 response body return은 boolean 값
-            if (body == true) {
-                user = decodeToken(token, appParam);
-                if( user == null ){
-                    return noauthPage(response);
-                }
-                return when.promise(function(resolve) {
-                    resolve(user);
-                    next();
-                });
-            } else {
-                // cookie 값이 변조되었을 경우 noauth
-                return noauthPage(response);
-            }
+        user = decodeToken(token, appParam);
+        return when.promise(function(resolve) {
+            resolve(user);
         });
     },
     removeUserRole: function(){

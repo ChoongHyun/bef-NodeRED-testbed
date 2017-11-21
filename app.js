@@ -41,11 +41,11 @@ var settings = {
     // 실행 된 node 하위 경로
     httpNodeRoot: '/',
     // 해당 node-red의 settings.js를 이용 경로 설정 & 저장 경로
-    userDir:'/usr/src/node-red/',
-    // userDir:'/Users/choong/Downloads/NodeRED/save/',
+    // userDir:'/usr/src/node-red/',
+    userDir:'/Users/choong/Downloads/NodeRED/save/',
     // custom node
-    nodesDir: '/usr/src/node-red/BEF-UI/custom/node/',
-    // nodesDir: '/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-UI/custom/node/',
+    // nodesDir: '/usr/src/node-red/BEF-UI/custom/node/',
+    nodesDir: '/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-UI/custom/node/',
     // admin auth
     adminAuth: require('./BEF-server/bef-admin-auth.js'),
     // category 순서
@@ -123,6 +123,13 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 // custom 된 JSON 형태도 허용할 경우
 app.use(bodyParser.json({ type: 'application/*+json' }));
+// Cookie 설정 api
+app.post('/cookie', function(req,res){
+    var appParam = req.query['appId'];
+    settings.adminAuth.getValidation(appParam, req.body.name, req.body.token);
+    res.sendStatus(200);
+    res.end();
+});
 // Cookie 삭제 api
 app.delete('/cookie', function(req,res){
     settings.adminAuth.removeUserRole();
@@ -155,31 +162,10 @@ app.get(restrictUrl, function(req,res,next){
     // nodeRedLocalURL
     var nodeRedUrl = req.get('host');
 
-    console.log('===============appParam======================');
-    console.log(appParam);
-    console.log('===============appParam======================');
-    console.log('===============cookie======================');
-    console.log(cookie['bef-login-token']);
-    console.log('===============cookie======================');
-    console.log('===============headers======================');
-    console.log(req.get('bef-login-token'));
-    console.log(req.getHeaders['bef-login-token']);
-    console.log(req.get('bef-login-token'));
-    console.log(req.getHeader['bef-login-token']);
-    console.log('===============headers======================');
-
-    if( cookie == null || cookie['bef-login-token'] == null || appParam == null ){
-        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-
-        settings.adminAuth.getCookie(path, nodeRedUrl,res, next );
+    if( appParam ){
+        next();
     }else{
-        console.log('#########################################');
-        // token 값 설정
-        var token = cookie['bef-login-token'];
-        // cookie 설정
-        res.cookie('Set-Cookie', 'bef-login-token=' + token);
-        // cookie validate 체크
-        settings.adminAuth.getValidation( appParam, token, nodeRedUrl, res, next );
+        settings.adminAuth.getCookie(path, nodeRedUrl, res, next );
     }
 });
 
