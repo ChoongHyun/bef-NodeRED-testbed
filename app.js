@@ -155,9 +155,19 @@ app.get(restrictUrl, function(req,res,next){
     // nodeRedLocalURL
     var nodeRedUrl = req.get('host');
 
+    console.log('===============appParam======================');
+    console.log(appParam);
+    console.log('===============appParam======================');
+    console.log('===============cookie======================');
+    console.log(cookie['bef-login-token']);
+    console.log('===============cookie======================');
+
     if( cookie == null || cookie['bef-login-token'] == null || appParam == null ){
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
         settings.adminAuth.getCookie(path, nodeRedUrl,res, next );
     }else{
+        console.log('#########################################');
         // token 값 설정
         var token = cookie['bef-login-token'];
         // cookie 설정

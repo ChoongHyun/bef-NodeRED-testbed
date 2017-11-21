@@ -49,6 +49,9 @@ module.exports = {
             if (error != null) {
                 return errorPage(response);
             }
+            console.log('===============body======================');
+            console.log(body);
+            console.log('===============body======================');
             // svc 에서 response body return은 boolean 값
             if (body == true) {
                 user = decodeToken(token, appParam);
