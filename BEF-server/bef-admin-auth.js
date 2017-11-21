@@ -50,7 +50,7 @@ module.exports = {
                 return errorPage(response);
             }
             // svc 에서 response body return은 boolean 값
-            if (body) {
+            if (body == true) {
                 user = decodeToken(token, appParam);
                 if( user == null ){
                     return noauthPage(response);
