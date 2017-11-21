@@ -1,0 +1,262 @@
+<script type="text/x-red" data-template-name="baas-poi">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <p>Authentication</p>
+    <div class="form-row">
+        <label for="node-input-appKey"><i class="fa fa-key"></i> TDC Key</label>
+        <input type="text" id="node-input-tdckey" placeholder="tdckey">
+    </div>
+
+	<p>BaaS Information</p>
+	<p hidden id="initPage">true</p>
+
+	<div class="form-row form-row-mainOption">
+        <label for="node-input-mainOption"><i class="fa fa-send-o"></i> Method</label>
+        <select onChange="chooseMainPOI()" type="text" id="node-input-mainOption" style="width:70%;">
+            <option selected value="GET">GET</option>
+            <option value="POST">POST</option>
+        </select>
+    </div>
+
+	<div class="form-row form-row-subOption">
+        <label for="node-input-subOption"><i class="fa fa-tasks"></i> Action</label>
+		<select onChange="chooseSubPOI()" type="text" id="node-input-subOption" style="width:70%;">
+            <option selected value="whereClose" class="GET">Search Close Range</option>
+            <option value="whereRange" class="GET">Search Range</option>
+			<option value="whereWithin" class="GET">Search Within Coordinates</option>
+			<option value="create" class="POST">Create</option>
+		</select>
+    </div>
+
+	<div class="form-row">
+        <label for="node-input-lat"><i class="fa fa-database"></i> Table Name </label>
+        <input type="text" id="node-input-tableName" placeholder="Table Name">
+    </div>
+
+	<p hidden id="payload_title" class="payloads"><br>Payload information</p>
+    <div class="form-row createData">
+        <label for="node-input-createData"><i class="fa fa-arrows-h"></i> Payload </label>
+        <textarea name="CreateText" id="node-input-createData" style="width:100%" rows="6"
+		placeholder="">
+		</textarea>
+		<button type='button' onclick=copyToClipboard('node-input-createData');>Copy Guide</button>
+	</div>
+
+	<div class="form-row form-row-whereClose whereAll">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> where (JSON) </label>
+		<textarea id="node-input-whereClose" style="width:100%" rows="6" placeholder="whereClose">
+		</textarea>
+		<button type='button' onclick=copyToClipboard('node-input-whereClose');>Copy Guide</button>
+	</div>
+
+
+	<div class="form-row form-row-whereRange whereAll">
+		<label for="node-input-lat"><i class="fa fa-arrows-h"></i> where (JSON) </label>
+		<textarea id="node-input-whereRange" style="width:100%" rows="6">
+		</textarea>
+		<button type='button' onclick=copyToClipboard('node-input-whereRange');>Copy Guide</button>
+	</div>
+	<div class="form-row form-row-whereWithin whereAll">
+		<label for="node-input-lat"><i class="fa fa-arrows-h"></i> where (JSON) </label>
+		<textarea id="node-input-whereWithin" style="width:100%" rows="6">
+		</textarea>
+		<button type='button' onclick=copyToClipboard('node-input-whereWithin');>Copy Guide</button>
+	</div>
+	<div class="form-row form-row-skip">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> skip </label>
+		<input type="text" id="node-input-skip" placeholder="skip">
+	</div>
+    <div class="form-row form-row-limit">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> limit </label>
+		<input type="text" id="node-input-limit" placeholder="limit">
+	</div>
+
+</script>
+
+<script type="text/javascript">
+
+    function setInitPOI(initState) {
+        var initVar = document.getElementById("initPage");
+        initVar.innerHTML = initState;
+    }
+
+    function getInitPOI() {
+        var initVar = document.getElementById("initPage");
+        if (initVar.innerHTML === "true") {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function copyToClipboard(elemId) {
+        var placeholder1 = $('#elemId').attr("placeholder");
+        var placeholder = document.getElementById(elemId).getAttribute("placeholder");
+
+        var clipboardText = '';
+        clipboardText = placeholder;
+
+        /*create hidden textarea with the content and select it*/
+        var clipboard = document.createElement("textarea");
+        clipboard.style.height = 0;
+        clipboard.style.width  = 0;
+        clipboard.value = clipboardText;
+        document.body.appendChild(clipboard);
+        clipboard.select();
+
+        console.log(clipboard.value);
+
+        /*do a copy*/
+        try {
+            if(!document.execCommand('copy')) {
+                console.log('Very fail, wow!');
+            }
+
+        } catch (err) {
+            console.log('Deep worries, unable to copy');
+        }
+    }
+
+    // adjust option select indexes if they are < 0
+    function adjustInitPOI() {
+        var aMenu1 = document.getElementById("node-input-mainOption");
+        var aMenu2 = document.getElementById("node-input-subOption");
+        if (aMenu1.selectedIndex < 0) {
+            aMenu1.selectedIndex=0;
+        }
+        if (aMenu2.selectedIndex < 0) {
+            aMenu2.selectedIndex=0;
+        }
+        createDataPlaceholderPOI();
+    }
+
+    function createDataPlaceholderPOI() {
+        const CREATE_DATA = { "GeoPointColumnName": { "latitude": 52.143, "longitude": 87.45 }};
+        const WHERE_WITHIN = { "GeoPointColumnName": { "$nearSphere": { "latitude": 10, "longitude" : 20 }, "$maxDistanceInKilometers": 10 }};
+        const WHERE_RANGE = { "GeoPointColumnName": { "$geoWithin": { "$box": [{"latitude": 10 , "longitude": 20 }, {"latitude": 50 , "longitude": 90 }] }}};
+        const WHERE_CLOSE = { "GeoPointColumnName": { "$nearSphere": { "latitude": 10, "longitude" : 20 }}};
+
+        var prettyCreate = JSON.stringify(CREATE_DATA, null, 4);
+        var prettyWithin = JSON.stringify(WHERE_WITHIN, null, 4);
+        var prettyRange = JSON.stringify(WHERE_RANGE, null, 4);
+        var prettyClose = JSON.stringify(WHERE_CLOSE, null, 4);
+
+        $("#node-input-createData").attr("placeholder", prettyCreate).blur();
+        $("#node-input-whereWithin").attr("placeholder", prettyWithin).blur();
+        $("#node-input-whereRange").attr("placeholder", prettyRange).blur();
+        $("#node-input-whereClose").attr("placeholder", prettyClose).blur();
+    }
+
+    function chooseMainPOI() {
+        var aMenu1 = document.getElementById("node-input-mainOption");
+        var aMenu2 = document.getElementById("node-input-subOption");
+
+        switch (aMenu1.value) {
+            case "GET":
+                $(".form-row-skip").show();
+                $(".form-row-limit").show();
+                $(".createData").hide();
+                $(".payloads").hide();
+                $('.GET').show();
+                $('.POST').hide();
+                if (!getInitPOI()) {
+                    aMenu2.value="whereClose";
+                }
+                break;
+
+            case "POST":
+                $(".form-row-skip").hide();
+                $(".form-row-limit").hide();
+                $(".createData").show();
+                $(".payloads").show();
+                $('.POST').show();
+                $('.GET').hide();
+                $(".whereAll").hide();
+                if (!getInitPOI()) {
+                    aMenu2.value="create";
+                }
+                break;
+        }
+        setInitPOI(false);
+        chooseSubPOI();
+    }
+
+    function chooseSubPOI() {
+        var aMenu1 = document.getElementById("node-input-mainOption");
+        var aMenu2 = document.getElementById("node-input-subOption");
+
+        switch (aMenu1.value) {
+            // GET (read)
+            case "GET":
+                switch (aMenu2.value) {
+                    case "whereClose":
+                        $(".form-row-whereClose").show();
+                        $(".form-row-whereRange").hide();
+                        $(".form-row-whereWithin").hide();
+                        break;
+
+                    case "whereRange":
+                        $(".form-row-whereRange").show();
+                        $(".form-row-whereClose").hide();
+                        $(".form-row-whereWithin").hide();
+                        break;
+
+                    case "whereWithin":
+                        $(".form-row-whereWithin").show();
+                        $(".form-row-whereClose").hide();
+                        $(".form-row-whereRange").hide();
+                        break;
+                }
+                break;
+        }
+    }
+
+</script>
+
+<script type="text/x-red" data-help-name="baas-poi">
+    <p>SKT BaaS POI API 노드입니다. 데이터에 저장된 정보 중 특정 위치에서 특정 반경 내에 들어가는 목록만 검색할 수 있도록 하여 위치기반 서비스를 개발할 때 활용할 수 있습니다. </p>
+    <p>파일 : <code>msg.myfile</code> </p>
+    <p>return : JSON format Data  style="display: none;" </p>
+    <p>자세한 내용은 <a href="https://developers.sktelecom.com/content/product/TAPI/view/?svcId=10048" target="_blank"> SKT DEVELOPERS site</a>를 참조하시기 바랍니다.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("baas-poi", {
+        category: "SKT_API",
+        color: "#d59463",
+        defaults: {
+            name: {value: ""},
+            tdckey: {value: "", required:true},
+            version: {value: 1, required:true},
+            mainOption: {value:"", required:true},
+            subOption: {value:"", required:true},
+            tableName: {value:"", required:true},
+            createData: {value:"", required:false},
+            whereClose: {value:"", required:false},
+            whereRange: {value:"", required:false},
+            whereWithin: {value:"", required:false},
+            skip: {value:"", required:false},
+            limit: {value:"", required:false}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "white-globe.png",
+        label: function() {
+            return this.name||"T-BaaS POI";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+
+        oneditprepare: function() {
+            adjustInitPOI();
+            setInitPOI(true); // Set init as true when entering node-red window for 1st time
+        },
+
+        paletteLabel: "T&#45;BaaS&nbsp;POI",
+        align: "left"
+    });
+</script>

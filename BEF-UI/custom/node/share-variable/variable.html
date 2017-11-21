@@ -1,0 +1,138 @@
+<!-- Setter Start -->
+<script type="text/x-red" data-template-name="Variable Set">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-scope"><i class="fa fa-tasks"></i> Scope</label>
+        <select type="text" id="node-input-scope" style="width:70%;">
+            <option value="a">Application</option>
+            <option value="w">Workspace</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-valueName"><i class="fa fa-key"></i> Id</label>
+        <input type="text" id="node-input-valueName" placeholder="key">
+    </div>
+    <div class="form-row">
+        <label for="node-input-value"><i class="fa fa-envelope"></i> Value</label>
+        <input type="text" id="node-input-value" style="width:70%">
+        <input type="hidden" id="node-input-valueType">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="Variable Set">
+    <p> BeF System을 통한 안전한 Variable Set </p>
+    <p> 복제된 Instance에서도 공유하게 되며, 재시작시에도 소멸하지 않습니다. </p>
+    <p> 변수를 <b>저장</b>하는 노드입니다 </p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("Variable Set", {
+        category: "SKT_API",
+        color: "#d8bc37",
+        defaults: {
+            name: {value: ""},
+            scope: {value: "a"},
+            valueName: {value: "", required:true},
+            value: {value:"payload", required:true, validate: RED.validators.typedInput("valueType")},
+            valueType: {value:"msg"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "upload.png",
+        label: function() {
+            return this.name||"Variable Set";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+            if (this.valueType == null || this.valueType === 'none') {
+                this.valueType = "msg";
+            }
+
+            $("#node-input-valueType").val(this.valueType);
+
+            $("#node-input-value").typedInput({
+                default: 'msg',
+                types: ['msg','flow','global','str'],
+                typeField: $("#node-input-valueType")
+            });
+
+        },
+        paletteLabel: "Variable&nbsp;Set",
+        align: "right"
+    });
+</script>
+
+
+<!-- Getter Start -->
+<script type="text/x-red" data-template-name="Variable Get">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-scope"><i class="fa fa-tasks"></i> Scope</label>
+        <select type="text" id="node-input-scope" style="width:70%;">
+            <option value="a">Application</option>
+            <option value="w">Workspace</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-valueName"><i class="fa fa-key"></i> Id</label>
+        <input type="text" id="node-input-valueName" placeholder="key">
+    </div>
+    <div class="form-row">
+        <label for="node-input-saveTo"><i class="fa fa-save"></i> Store to</label>
+        <input type="text" id="node-input-saveTo" style="width:70%">
+        <input type="hidden" id="node-input-valueType">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="Variable Get">
+    <p> BeF System을 통한 안전한 Variable Get </p>
+    <p> 복제된 Instance에서도 공유하게 되며, 재시작시에도 소멸하지 않습니다. </p>
+    <p> 변수를 <b>불러오는</b> 노드입니다 </p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("Variable Get", {
+        category: "SKT_API",
+        color: "#7b6910",
+        defaults: {
+            name: {value: ""},
+            scope: {value: "a"},
+            valueName: {value: "", required:true},
+            saveTo: {value:"value", required:true, validate: RED.validators.typedInput("valueType")},
+            valueType: {value:"msg"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "download.png",
+        label: function() {
+            return this.name||"Variable Get";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+            if (this.valueType == null || this.valueType === 'none') {
+                this.valueType = "msg";
+            }
+
+            $("#node-input-valueType").val(this.valueType);
+
+            $("#node-input-saveTo").typedInput({
+                default: 'msg',
+                types:['msg','flow','global'],
+                typeField: $("#node-input-valueType")
+            });
+
+        },
+        paletteLabel: "Variable&nbsp;Get",
+        align: "left"
+    });
+</script>

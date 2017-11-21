@@ -1,0 +1,52 @@
+<script type="text/x-red" data-template-name="tp-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="config name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-tpHost"><i class="fa fa-globe"></i> Host</label>
+        <input class="input-append-left" type="text" id="node-config-input-tpHost" style="width: 40%;">
+        <label for="node-config-input-tpPort" style="margin-left: 10px; width: 35px; "> Port</label>
+        <input type="text" id="node-config-input-tpPort" style="width:45px">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-appEUI"><i class="fa fa-male"></i> App EUI</label>
+        <input type="text" id="node-config-input-appEUI">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-devEUI"><i class="fa fa-child"></i> Dev EUI</label>
+        <input type="text" id="node-config-input-devEUI">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-version"><i class="fa fa-code-fork"></i> Version</label>
+        <input type="text" id="node-config-input-version">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-containerName"><i class="fa fa-cog"></i> Container Name</label>
+        <input type="text" id="node-config-input-containerName">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="tp-config">
+    <p>ThingPlug Settings. Server and version, container. </p>
+</script>
+
+
+<script type="text/javascript">
+    RED.nodes.registerType('tp-config',{
+        category: 'config',
+        defaults: {
+            name : {value:""},
+            appEUI : {value:"starterkittest", required: true},
+            devEUI : {value:"DevEUI", required: true},
+            version : {value:"v1_0", required: true},
+            tpHost : {value:"onem2m.sktiot.com", required: true},
+            tpPort : {value:"9000", required: true},
+            containerName : {value:"LoRa", required: true}
+        },
+        paletteLabel: 'ThingPlug&nbsp;Config&nbsp;Tab',
+        label: function() {
+            return this.name || this.tpHost+":"+ this.tpPort + "," + this.appEUI + "," + this.containerName
+        }
+    });
+</script>

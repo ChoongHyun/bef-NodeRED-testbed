@@ -1,0 +1,64 @@
+<script type="text/x-red" data-template-name="Weather Planet">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <p>Authentication</p>
+    <div class="form-row">
+        <label for="node-input-userId"><i class="fa fa-user"></i> User ID</label>
+        <input type="text" id="node-input-userId" placeholder="userId">
+    </div>
+    <div class="form-row">
+        <label for="node-input-appKey"><i class="fa fa-key"></i> App Key</label>
+        <input type="text" id="node-input-appKey" placeholder="appKey">
+    </div>
+    <div class="form-row">
+        <label for="node-input-version"><i class="fa fa-code-fork"></i> Version</label>
+        <input type="text" id="node-input-version" placeholder="Current is version 1">
+    </div>
+    <p>Geo Location</p>
+    <div class="form-row">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> Latitude </label>
+        <input type="text" id="node-input-lat" placeholder="Latitude">
+    </div>
+    <div class="form-row">
+        <label for="node-input-lon"><i class="fa fa-arrows-v"></i>   Longitude </label>
+        <input type="text" id="node-input-lon" placeholder="Longitude">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="Weather Planet">
+    <p>SK Weather API 노드입니다. 입력받은 위, 경도에서 가장 가까운 관측소의 일기 예보값을 반환합니다. </p>
+    <p>위도 : <code>msg.lat</code> </p>
+    <p>경도 : <code>msg.lon</code> </p>
+    <p>return : JSON format Data</p>
+    <p>자세한 내용은 <a href="https://developers.skplanetx.com/apidoc/kor/weather/information/" target="_blank"> SK Planet DEVELOPERS site</a>를 참조하시기 바랍니다.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("Weather Planet", {
+        category: "SKT_API",
+        color: "#82400e",
+        defaults: {
+            name: {value: ""},
+            userId: {value: "", required: true},
+            appKey: {value: "", required: true},
+            version: {value: 1, required:true},
+            lat:{value:""},
+            lon:{value: ""}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "weatherapi.png",
+        label: function() {
+            return this.name||"Weather Planet";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: "Weather&nbsp;Planet",
+        align: "left"
+    });
+
+
+</script>

@@ -1,0 +1,516 @@
+<script type="text/x-red" data-template-name="baas-DB">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <p>Authentication</p>
+    <div class="form-row">
+        <label for="node-input-appKey"><i class="fa fa-key"></i> TDC Key</label>
+        <input type="text" id="node-input-tdckey" placeholder="tdckey">
+    </div>
+    <p>BaaS Information</p>
+
+    <p hidden id="initPage">true</p>
+
+    <div class="form-row form-row-mainOption">
+        <label for="node-input-mainOption"><i class="fa fa-send-o"></i> Method</label>
+        <select onChange="chooseMain()" type="text" id="node-input-mainOption" style="width:70%;">
+            <option selected value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+        </select>
+    </div>
+
+    <div class="form-row form-row-subOption">
+        <label for="node-input-subOption"><i class="fa fa-tasks"></i> Action</label>
+		<select onChange="chooseSub()" type="text" id="node-input-subOption" style="width:70%;">
+            <option selected value="all" class="GET">ALL</option>
+            <option value="single" class="GET">Single Row</option>
+            <option value="whereComp" class="GET">Where compound</option>
+            <option value="count" class="GET">Total Count</option>
+            <option value="pointerRow" class="GET">Pointer Row Data</option>
+            <option value="create" class="POST">Create</option>
+            <option value="modSingleRow" class="PUT">Modify Single Row</option>
+            <option value="incRow" class="PUT">Increment Row</option>
+            <option value="arrayAdd" class="PUT">Array Add</option>
+            <option value="uniqueArrayAdd" class="PUT">Unique Array Add</option>
+            <option value="arrayDelete" class="PUT">Array Delete</option>
+            <option value="relationAdd" class="PUT">Relation Row Add</option>
+            <option value="relationDelete" class="PUT">Relation Row Delete</option>
+            <option value="DELETE" class="DELETE">Delete Row</option>
+		</select>
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-lat"><i class="fa fa-database"></i> Table Name </label>
+        <input type="text" id="node-input-tableName" placeholder="Table Name">
+    </div>
+    <div class="form-row form-row-objectId">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> objectId </label>
+		<input type="text" id="node-input-objectId" placeholder="objectId">
+	</div>
+    <div class="form-row form-row-where">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> where (JSON) </label>
+		<input type="text" id="node-input-where" placeholder="{ &quot;index&quot; : {&quot;$gte&quot;:10}}">
+		<button type='button' onclick=copyToClipboard('node-input-where');>Copy Guide</button>
+	</div>
+    <div class="form-row form-row-count">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> count </label>
+		<input type="text" id="node-input-count" placeholder="1: Show row count">
+	</div>
+    <div class="form-row form-row-include">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> include </label>
+		<input type="text" id="node-input-include" placeholder="Pointer column name">
+	</div>
+    <div class="form-row form-row-skip">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> skip </label>
+		<input type="text" id="node-input-skip" placeholder="skip">
+	</div>
+    <div class="form-row form-row-limit">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> limit </label>
+		<input type="text" id="node-input-limit" placeholder="limit">
+	</div>
+
+    <p hidden id="payload_title" class="payloads"><br>Payload information</p>
+    <div class="form-row createData">
+        <label for="node-input-createData"><i class="fa fa-arrows-h"></i> Payload </label>
+        <textarea name="CreateText" id="node-input-createData" style="width:100%" rows="6"
+		placeholder="">
+		</textarea>
+		<button type='button' onclick=copyToClipboard('node-input-createData');>Copy Guide</button>
+	</div>
+	<div class="form-row modifyData modSingleRow">
+        <label for="node-input-modSingleRow" style="width:40%"><i class="fa fa-arrows-h"></i> Payload (JSON) </label>
+        <textarea name="ModifyText" id="node-input-modSingleRow" style="width:100%" rows="6"
+		placeholder="">
+		</textarea>
+		<button type='button' onclick=copyToClipboard('node-input-modSingleRow');>Copy Guide</button>
+	</div>
+    <div class="form-row modifyData colName">
+        <label for="node-input-colName">Column Name</label>
+		<input type="text" id="node-input-colName" placeholder="">
+	</div>
+	<div class="form-row modifyData colName_incRow">
+        <label for="node-input-colName_incRow">Column Name</label>
+		<input type="text" id="node-input-colName_incRow" placeholder="">
+	</div>
+	<div class="form-row modifyData colName_arrayAdd">
+        <label for="node-input-colName_arrayAdd">Column Name</label>
+		<input type="text" id="node-input-colName_arrayAdd" placeholder="">
+	</div>
+	<div class="form-row modifyData colName_uniqueArrayAdd">
+        <label for="node-input-colName_uniqueArrayAdd">Column Name</label>
+		<input type="text" id="node-input-colName_uniqueArrayAdd" placeholder="">
+	</div>
+	<div class="form-row modifyData colName_arrayDelete">
+        <label for="node-input-colName_arrayDelete">Column Name</label>
+		<input type="text" id="node-input-colName_arrayDelete" placeholder="">
+	</div>
+	<div class="form-row modifyData colName_relationAdd">
+        <label for="node-input-colName_relationAdd">Column Name</label>
+		<input type="text" id="node-input-colName_relationAdd" placeholder="">
+	</div>
+	<div class="form-row modifyData colName_relationDelete">
+        <label for="node-input-colName_relationDelete">Column Name</label>
+		<input type="text" id="node-input-colName_relationDelete" placeholder="">
+	</div>
+
+
+	<div class="form-row modifyData colValue_incRow">
+        <label for="node-input-colValue_incRow"></label>
+		<input type="text" id="node-input-colValue_incRow" placeholder="">
+	</div>
+	<div class="form-row modifyData colValue_arrayAdd">
+        <label for="node-input-colValue_arrayAdd"></label>
+		<input type="text" id="node-input-colValue_arrayAdd" placeholder="">
+	</div>
+	<div class="form-row modifyData colValue_uniqueArrayAdd">
+        <label for="node-input-colValue_uniqueArrayAdd"></label>
+		<input type="text" id="node-input-colValue_uniqueArrayAdd" placeholder="">
+	</div>
+	<div class="form-row modifyData colValue_arrayDelete">
+        <label for="node-input-colValue_arrayDelete"></label>
+		<input type="text" id="node-input-colValue_arrayDelete" placeholder="">
+	</div>
+	<div class="form-row modifyData colValue_relationAdd">
+        <label for="node-input-colValue_relationAdd"></label>
+		<input type="text" id="node-input-colValue_relationAdd" placeholder="">
+	</div>
+	<div class="form-row modifyData colValue_relationDelete">
+        <label for="node-input-colValue_relationDelete"></label>
+		<input type="text" id="node-input-colValue_relationDelete" placeholder="">
+	</div>
+
+</script>
+
+<script type="text/javascript">
+
+    function showAlert(message) {
+        alert("Showing alert: " + message);
+    }
+
+    function getMainIndex() {
+        var optionIndex = document.getElementById("node-input-mainOption").selectedIndex;
+        alert("Called getMain: " + optionIndex);
+        console.log("Set Main: " + document.getElementById(elem));
+    }
+
+    function getSubIndex(elem) {
+        var optionIndex = document.getElementById("node-input-subOption").selectedIndex;
+        alert("Set sub: " + document.getElementById(elem).selectedIndex);
+        console.log("Set sub: " + document.getElementById(elem));
+    }
+
+    function setInit(initState) {
+        var initVar = document.getElementById("initPage");
+        initVar.innerHTML = initState;
+    }
+
+    function getInit() {
+        var initVar = document.getElementById("initPage");
+        if (initVar.innerHTML === "true") {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    // adjust option select indexes if they are < 0
+    function adjustInit() {
+        var aMenu1 = document.getElementById("node-input-mainOption");
+        var aMenu2 = document.getElementById("node-input-subOption");
+        if (aMenu1.selectedIndex < 0) {
+            aMenu1.selectedIndex=0;
+        }
+        if (aMenu2.selectedIndex < 0) {
+            aMenu2.selectedIndex=0;
+        }
+        createDataPlaceholder();
+    }
+
+    function createDataPlaceholder() {
+
+        const DATA_PLACEHOLDER = "\{ \"NumberTypeCustomColumnName\": 123456, \
+	        \"StringTypeCustomColumnName\": \"SampleValue\", \
+	        \"DateTypeCustomColumnName\": \{\"__type\": \"Date\",\"iso\": \"2013-10-15T00:00:00Z\"\}, \
+	        \"ArrayTypeCustomColumnName\": \[1234,\"StringDataSample\", false\], \
+	        \"ObjectTypeCustomColumnName\": \{\"sampleKey1\": \"sampleValue1\",\"sampleKey2\": \"sampleValue2\"\}, \
+	        \"PointerTypeCustomColumnName\": \{\"__type\": \"Pointer\",\"dataName\": \"타깃 테이블 이름\",\"objectId\": \"타깃오브젝트아이디\"\}, \
+	        \"RelationTypeCustomColumnName\": \{\"__type\": \"Relation\",\"dataName\": \"타깃 테이블 이름\",\"objectIds\": \[\"연결된objectId\",\"연결된objectId\"\]\} \
+    	\}";
+
+        const DATA_PLACEHOLDER_SHORT = { "NumberColumnName": 123, "StringColumnName": "Some String", "BooleanColumnName": true };
+        var prettyData = JSON.stringify(DATA_PLACEHOLDER_SHORT, null, 4);
+
+        $("#node-input-createData").attr("placeholder", prettyData).blur();
+        $("#node-input-modSingleRow").attr("placeholder", prettyData).blur();
+    }
+
+    function chooseMain() {
+        var aMenu1 = document.getElementById("node-input-mainOption");
+        var aMenu2 = document.getElementById("node-input-subOption");
+
+        switch (aMenu1.value) {
+            // GET (read)
+            case "GET":
+                $('.GET').show();
+
+                $('.POST').hide();
+                $('.PUT').hide();
+                $('.DELETE').hide();
+                $('.payloads').hide();
+                $('.modifyData').hide();
+                $('.createData').hide();
+                if (!getInit()) {
+                    aMenu2.value="all";
+                }
+                break;
+
+            case "POST":
+                $('.POST').show();
+                $('.payloads').show();
+                $('.createData').show();
+                $(".form-row-payload").show();
+
+                $('.GET').hide();
+                $('.PUT').hide();
+                $('.DELETE').hide();
+                $('.modifyData').hide();
+                $(".form-row-objectId").hide();
+                $(".form-row-skip").hide();
+                $(".form-row-limit").hide();
+                $(".form-row-where").hide();
+                $(".form-row-count").hide();
+                $(".form-row-include").hide();
+                if (!getInit()) {
+                    aMenu2.value="create";
+                }
+                break;
+
+            case "PUT":
+                $('.PUT').show();
+                $('.payloads').show();
+                // $('.modifyData').show();
+                $(".form-row-objectId").show();
+
+                $('.GET').hide();
+                $('.POST').hide();
+                $('.DELETE').hide();
+                $('.createData').hide();
+                $(".form-row-skip").hide();
+                $(".form-row-limit").hide();
+                $(".form-row-where").hide();
+                $(".form-row-count").hide();
+                $(".form-row-include").hide();
+                if (!getInit()) {
+                    aMenu2.value="modSingleRow";
+                }
+                break;
+
+            case "DELETE":
+                $('.DELETE').show();
+                $(".form-row-objectId").show();
+
+                $('.GET').hide();
+                $('.POST').hide();
+                $('.PUT').hide();
+                $('.payloads').hide();
+                $('.modifyData').hide();
+                $('.createData').hide();
+                $(".form-row-payload").hide();
+                $(".form-row-skip").hide();
+                $(".form-row-limit").hide();
+                $(".form-row-where").hide();
+                $(".form-row-count").hide();
+                $(".form-row-include").hide();
+                if (!getInit()) {
+                    aMenu2.value="DELETE";
+                }
+                break;
+        }
+        setInit(false);
+        chooseSub();
+    }
+
+    function chooseSub() {
+        var aMenu = document.getElementById("node-input-mainOption");
+        var aMenu2 = document.getElementById("node-input-subOption");
+        const COL_VAL = "Column Value";
+        const COL_NAME = "Column Name";
+        const NAME_EX = "Counter";
+        const VAL_EX = "5";
+        const INC_VAL = "Increment";
+        const ARRAY_REG = "[1, 2, 3]";
+        const ARRAY_UNIQUE = "[4, 5]";
+        const TABLE_NAME = "Table Name";
+        const TARGET_TABLE = "Target Table Name";
+
+        switch (aMenu.value) {
+            // GET (read)
+            case "GET":
+                switch (aMenu2.value) {
+                    case "all":
+                        $(".form-row-objectId").hide();
+                        $(".form-row-skip").show();
+                        $(".form-row-limit").show();
+                        $(".form-row-where").hide();
+                        $(".form-row-count").hide();
+                        $(".form-row-include").hide();
+                        $(".form-row-payload").hide();
+                        break;
+
+                    case "single":
+                        $(".form-row-objectId").show();
+                        $(".form-row-skip").hide();
+                        $(".form-row-limit").hide();
+                        $(".form-row-where").hide();
+                        $(".form-row-count").hide();
+                        $(".form-row-include").hide();
+                        $(".form-row-payload").hide();
+                        break;
+
+                    case "whereComp":
+                        $(".form-row-where").show();
+                        $(".form-row-skip").show();
+                        $(".form-row-limit").show();
+                        $(".form-row-objectId").hide();
+                        $(".form-row-count").hide();
+                        $(".form-row-include").hide();
+                        $(".form-row-payload").hide();
+                        break;
+
+                    case "count":
+                        $(".form-row-count").show();
+                        $(".form-row-skip").show();
+                        $(".form-row-limit").show();
+                        $(".form-row-objectId").hide();
+                        $(".form-row-where").hide();
+                        $(".form-row-include").hide();
+                        $(".form-row-payload").hide();
+                        break;
+
+                    case "pointerRow":
+                        $(".form-row-objectId").show();
+                        $(".form-row-include").show();
+                        $(".form-row-skip").hide();
+                        $(".form-row-limit").hide();
+                        $(".form-row-where").hide();
+                        $(".form-row-count").hide();
+                        $(".form-row-payload").hide();
+                        break;
+                }
+                break;
+
+            // PUT (modify)
+            case "PUT":
+
+                switch (aMenu2.value) {
+                    case "modSingleRow":
+                        $('.modifyData').hide();
+                        $('.modSingleRow').show();
+                        break;
+
+                    case "incRow":
+                        $('.modifyData').hide();
+                        $('.colValue_incRow').show();
+                        $('.colName_incRow').show();
+                        $("#node-input-colName_incRow").attr("placeholder", NAME_EX).blur();
+                        $("label[for='node-input-colValue_incRow']").text(INC_VAL);
+                        $("#node-input-colValue_incRow").attr("placeholder", VAL_EX).blur();
+                        break;
+
+                    case "arrayAdd":
+                        $('.modifyData').hide();
+                        $('.colValue_arrayAdd').show();
+                        $('.colName_arrayAdd').show();
+                        $("#node-input-colName_arrayAdd").attr("placeholder", NAME_EX).blur();
+                        $("label[for='node-input-colValue_arrayAdd']").text(COL_VAL);
+                        $("#node-input-colValue_arrayAdd").attr("placeholder", ARRAY_REG).blur();
+                        break;
+
+                    case "uniqueArrayAdd":
+                        $('.modifyData').hide();
+                        $('.colValue_uniqueArrayAdd').show();
+                        $('.colName_uniqueArrayAdd').show();
+                        $("#node-input-colName_uniqueArrayAdd").attr("placeholder", NAME_EX).blur();
+                        $("label[for='node-input-colValue_uniqueArrayAdd']").text(COL_VAL);
+                        $("#node-input-colValue_uniqueArrayAdd").attr("placeholder", ARRAY_UNIQUE).blur();
+                        break;
+
+                    case "arrayDelete":
+                        $('.modifyData').hide();
+                        $('.colValue_arrayDelete').show();
+                        $('.colName_arrayDelete').show();
+                        $("#node-input-colName_arrayDelete").attr("placeholder", NAME_EX).blur();
+                        $("label[for='node-input-colValue_arrayDelete']").text(COL_VAL);
+                        $("#node-input-colValue_arrayDelete").attr("placeholder", ARRAY_UNIQUE).blur();
+                        break;
+
+                    case "relationAdd":
+                        $('.modifyData').hide();
+                        $('.colValue_relationAdd').show();
+                        $('.colName_relationAdd').show();
+                        $("#node-input-colName_relationAdd").attr("placeholder", COL_NAME).blur();
+                        $("label[for='node-input-colValue_relationAdd']").text(TABLE_NAME);
+                        $("#node-input-colValue_relationAdd").attr("placeholder", TARGET_TABLE).blur();
+                        break;
+
+                    case "relationDelete":
+                        $('.modifyData').hide();
+                        $('.colValue_relationDelete').show();
+                        $('.colName_relationDelete').show();
+                        $("#node-input-colName_relationDelete").attr("placeholder", COL_NAME).blur();
+                        $("label[for='node-input-colValue_relationDelete']").text(TABLE_NAME);
+                        $("#node-input-colValue_relationDelete").attr("placeholder", TARGET_TABLE).blur();
+                        break;
+                }
+                break;
+        }
+    }
+
+</script>
+
+<script type="text/x-red" data-help-name="baas-DB">
+    <p>SKT DB API 노드입니다. 별도의 서버를 구축하지 않아도, 서버 기술을 몰라도 서비스 운영 환경을 백엔드 기능과 함께 구현 가능한 서비스 플랫폼. </p>
+    <p>우선 DB를 생성 한 후 CRUD (생성, 조회, 수정, 삭제) operation을 할 수 있습니다. 아래 필드는 필수이며 Action 에 따라 필드가 추가 될 수 있습니다.
+    <p>TDC 인증 Key : <code>msg.tdckey</code> </p>
+    <p>테이블 이름 : <code>msg.tableName</code> </p>
+    <p>return : JSON format Data</p>
+    <p>자세한 내용은 <a href="https://developers.sktelecom.com/content/product/TAPI/view/?svcId=10048" target="_blank"> SKT DEVELOPERS site</a>를 참조하시기 바랍니다.</p>
+</script>
+
+<script type="text/javascript">
+
+    function checkJSON () {
+        try {
+            var o = JSON.parse(jsonString);
+
+            if (o && typeof o === "object") {
+                return true;
+            }
+        }
+        catch (e) { }
+        return false;
+    };
+
+    RED.nodes.registerType("baas-DB", {
+        category: "SKT_API",
+        color: "#ee8434",
+
+        defaults: {
+            name: {value: ""},
+            tdckey: {value: ""},
+            version: {value: 1},
+            tableName: {value:""},
+            objectId: {value:""},
+            where: {value:""},
+            count: {value:""},
+            include: {value:""},
+            payload: {value:""},
+            skip: {value:""},
+            limit: {value:""},
+            mainOption: {value:"GET"},
+            subOption: {value:"ALL"},
+            colName: {value:""},
+            colName_incRow: {value:""},
+            colName_arrayAdd: {value:""},
+            colName_uniqueArrayAdd: {value:""},
+            colName_arrayDelete: {value:""},
+            colName_relationAdd: {value:""},
+            colName_relationDelete: {value:""},
+            colValue_incRow: {value:""},
+            colValue_arrayAdd: {value:""},
+            colValue_uniqueArrayAdd: {value:""},
+            colValue_arrayDelete: {value:""},
+            colValue_relationAdd: {value:""},
+            colValue_relationDelete: {value:""},
+            createData: {value:""},
+            modSingleRow: {value:""},
+            incRow: {value:""},
+            arrayAdd: {value:""},
+            uniqueArrayAdd: {value:""},
+            arrayDelete: {value:""},
+            relationAdd: {value:""},
+            relationDelete: {value:""}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "db.png",
+        label: function() {
+            return this.name||"T-BaaS DB";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+
+        oneditprepare: function() {
+            adjustInit();
+            setInit(true); // Set init as true when entering node-red window for 1st time
+        },
+
+        paletteLabel: "T&#45;BaaS&nbsp;DB",
+        align: "left"
+    });
+</script>

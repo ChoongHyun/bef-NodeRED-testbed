@@ -1,0 +1,48 @@
+{
+  "name": "BEF-node-red",
+  "version": "0.0.1",
+  "description": "BEF node red",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "express": "~4.15.2",
+    "jade": "~1.11.0",
+    "morgan": "~1.8.1",
+    "serve-favicon": "~2.4.2",
+    "when": "^3.7.8",
+    "request": "^2.81.0",
+    "express-session": "^1.15.3",
+    "sync-request": "^4.1.0",
+    "then-request": "^4.1.0",
+    "http": "^0.0.0",
+    "url": "^0.11.0",
+
+    "node-red": "0.17.5",
+    "node-red-node-msgpack": "*",
+    "node-red-node-base64": "*",
+    "node-red-node-suncalc": "*",
+    "node-red-node-random": "*",
+    "node-red-dashboard": "*",
+
+    "cors":"2.8.3",
+    "is-utf8":"0.2.1",
+    "media-typer": "0.3.0",
+    "multer": "1.3.0",
+    "on-headers":"1.0.1",
+    "raw-body":"2.2.0",
+    "hash-sum":"1.0.2",
+    "jsonwebtoken": "^8.0.1",
+    "ws": "1.1.1",
+    "cookies": "^0.7.1",
+    "fs" : "^0.0.1-security",
+    "https" : "^1.0.0"
+  },
+  "engines": {
+    "node": "6.*.*"
+  }
+}

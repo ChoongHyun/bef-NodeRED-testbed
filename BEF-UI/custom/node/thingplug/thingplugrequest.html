@@ -1,0 +1,59 @@
+<script type="text/x-red" data-template-name="ThingPlug Request">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-tpconfig"><i class="fa fa-plug"></i> ThingPlug</label>
+        <input type="text" id="node-input-tpconfig">
+    </div>
+    <div class="form-row">
+        <label for="node-input-ukey"><i class="fa fa-user"></i> uKey</label>
+        <input type="text" id="node-input-ukey" placeholder="uKey">
+    </div>
+    <div class="form-row">
+        <label for="node-input-nodeid"><i class="fa fa-podcast"></i> Device ID</label>
+        <input type="text" id="node-input-nodeid" placeholder="nodeId">
+    </div>
+    <p>Polling Interval</p>
+    <div class="form-row">
+        <label for="node-input-interval"><i class="fa fa-clock-o"></i> Interval (S)</label>
+        <input type="text" id="node-input-interval" placeholder="Interval">
+    </div>
+</script>
+
+
+<script type="text/x-red" data-help-name="ThingPlug Request">
+    <p>ThingPlug에 등록된 디바이스의 latest 정보를 가져옵니다</p>
+    <p>좌측의 Toggle 버튼을 통해 활성화 / 비활성화 할 수 있습니다. </p>
+    <p>키 발급, 자세한 문서는 <a href="http://thingplug.sktiot.com" target="_blank">ThingPlug 홈페이지</a>를 참조하시기 바랍니다.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("ThingPlug Request", {
+        category: "SKT_API",
+        color: "#5f574c",
+        defaults: {
+            name: {value: ""},
+            tpconfig: {type:"tp-config", required:true},
+            ukey: {value: "", required: true},
+            nodeid: {value: "", required: true},
+            interval: {value: 60, required: true, validate: RED.validators.number()},
+            active: {value: true}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "thingplug-icon.png",
+        label: function() {
+            return this.name||"ThingPlug Request";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: "ThingPlug&nbsp;Request",
+        align: "left"
+    });
+</script>
+
+
+

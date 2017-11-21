@@ -1,0 +1,115 @@
+<script type="text/x-red" data-template-name="baas-file">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <p>Authentication</p>
+    <div class="form-row">
+        <label for="node-input-appKey"><i class="fa fa-key"></i> TDC Key</label>
+        <input type="text" id="node-input-tdckey" placeholder="tdckey">
+    </div>
+
+	<p>BaaS Information</p>
+	<div class="form-row form-row-mainOption">
+        <label for="node-input-mainOption"><i class="fa fa-send-o"></i> Method</label>
+        <select onChange="chooseMain_File()" type="text" id="node-input-mainOption" style="width:70%;">
+            <option selected value="GET">GET - Retrieve File List</option>
+            <option value="POST">POST - Upload File</option>
+        </select>
+    </div>
+
+	<div class="form-row form-row-skip">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> skip </label>
+		<input type="text" id="node-input-skip" placeholder="skip">
+	</div>
+    <div class="form-row form-row-limit">
+        <label for="node-input-lat"><i class="fa fa-arrows-h"></i> limit </label>
+		<input type="text" id="node-input-limit" placeholder="limit">
+	</div>
+
+    <div class="form-row form-row-file">
+        <label for="node-input-myfile"><i class="fa fa-file"></i> File </label>
+		<input type="text" id="node-input-myfile" placeholder="full filename in absolute path">
+    </div>
+</script>
+
+<script type="text/javascript">
+
+    // adjust option select indexes if they are < 0
+
+</script>
+
+<script type="text/x-red" data-help-name="baas-file">
+    <p>SKT BaaS File API 노드입니다. 파일을 업로드 하고 조회할 수 있습니다. </p>
+    <p>파일 : <code>msg.myfile</code> </p>
+    <p>return : JSON format Data  style="display: none;" </p>
+    <p>자세한 내용은 <a href="https://developers.sktelecom.com/content/product/TAPI/view/?svcId=10048" target="_blank"> SKT DEVELOPERS site</a>를 참조하시기 바랍니다.</p>
+</script>
+
+<script type="text/javascript">
+
+    function adjustInitFile() {
+        var aMenu1 = document.getElementById("node-input-mainOption");
+
+        if (aMenu1.selectedIndex < 0) {
+            aMenu1.selectedIndex=0;
+
+        }
+    }
+
+    function getInit() {
+        var initVar = document.getElementById("initPage");
+        if (initVar.innerHTML === "true") {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function chooseMain_File() {
+        var aMenu1 = document.getElementById("node-input-mainOption");
+
+        switch (aMenu1.value) {
+            case "GET":
+                $(".form-row-skip").show();
+                $(".form-row-limit").show();
+                $(".form-row-file").hide();
+                break;
+
+            case "POST":
+                $(".form-row-skip").hide();
+                $(".form-row-limit").hide();
+                $(".form-row-file").show();
+                break;
+        }
+    }
+
+    RED.nodes.registerType("baas-file", {
+        category: "SKT_API",
+        color: "#a36536",
+        defaults: {
+            name: {value: ""},
+            tdckey: {value: "", required:true},
+            version: {value: 1, required:true},
+            mainOption: {value:"", required:true},
+            myfile: {value: "", required:false},
+            skip: {value: "", required:false},
+            limit: {value: "", required:false},
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "file.png",
+        label: function() {
+            return this.name||"T-BaaS File";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+            adjustInitFile();
+        },
+        paletteLabel: "T&#45;BaaS&nbsp;File",
+        align: "left"
+    });
+</script>

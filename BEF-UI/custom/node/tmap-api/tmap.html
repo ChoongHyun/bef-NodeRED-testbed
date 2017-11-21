@@ -1,0 +1,372 @@
+<style>
+    .label-bottom-margin label {
+        position: relative;
+        margin-bottom: 15px;
+    }
+</style>
+
+<script type="text/x-red" data-template-name="geoCoding">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row label-bottom-margin" >
+        <label for="node-input-method"><i class="fa fa-exchange"></i> 변환 방식</label>
+        <select type="text" id="node-input-method" style="width:70%;">
+            <option value="f">주소 검색 -> 좌표 변환</option>
+            <option value="g">주소 -> 좌표 변환</option>
+            <option value="r">좌표 -> 주소 변환</option>
+            <option value="t">좌표계간 변환</option>
+        </select><br>
+        <label for="node-input-appKey"><i class="fa fa-key"></i> appKey</label>
+        <input type="text" id="node-input-appKey">
+    </div>
+    <div class="form-row" id="fullAddr">
+        <label for="node-input-fullAddr"><i class="fa fa-home"></i> 주소</label>
+        <input type="text" id="node-input-fullAddr" style="width:70%" placeholder="서울시 중구 을지로 65">
+        <input type="hidden" id="node-input-fullAddrType">
+    </div>
+    <div class="form-row label-bottom-margin" id="toGeo">
+        <label for="node-input-city_do"><i class="fa fa-home"></i> 시도</label>
+        <input type="text" id="node-input-city_do" style="width:70%;" placeholder="서울">
+        <input type="hidden" id="node-input-city_doType"><br>
+        <label for="node-input-gu_gun"><i class="fa fa-home"></i> 구군</label>
+        <input type="text" id="node-input-gu_gun" style="width:70%;" placeholder="중구">
+        <input type="hidden" id="node-input-gu_gunType"><br>
+        <label for="node-input-dong"><i class="fa fa-home"></i> 도로명/동</label>
+        <input type="text" id="node-input-dong" style="width:70%;" placeholder="을지로">
+        <input type="hidden" id="node-input-dongType"><br>
+        <label for="node-input-bunji"><i class="fa fa-home"></i> 건물번호/번지 <br>(생략 가능)</label>
+        <input type="text" id="node-input-bunji" style="width:70%;" placeholder="65">
+        <input type="hidden" id="node-input-bunjiType"><br>
+        <label for="node-input-detailAddress"><i class="fa fa-home"></i> 상세주소 <br>(생략 가능)</label>
+        <input type="text" id="node-input-detailAddress" style="width:70%;" placeholder="SK T-타워">
+        <input type="hidden" id="node-input-detailAddressType"><br>
+        <label><i class="fa fa-tag"></i> 주소 유형</label>
+        <select type="text" id="node-input-addressFlag" style="width:70%;">
+            <option value="F02">도로명 (신주소)</option>
+            <option value="F01">지번 (구주소)</option>
+        </select>
+    </div>
+    <div class="form-row label-bottom-margin" id="toAddr">
+        <label for="node-input-lat"><i class="fa fa-arrows-v"></i> 위도</label>
+        <input type="text" id="node-input-lat" style="width:70%;" placeholder="4518364.824698">
+        <input type="hidden" id="node-input-latType"><br>
+        <label for="node-input-lon"><i class="fa fa-arrows-h"></i> 경도</label>
+        <input type="text" id="node-input-lon" style="width:70%;" placeholder="14135919.787278">
+        <input type="hidden" id="node-input-lonType">
+    </div>
+    <div class="form-row label-bottom-margin" id="transfer">
+        <label for="node-input-beforeCoordType"><i class="fa fa-globe"></i> 변환전 좌표계</label>
+        <select type="text" id="node-input-beforeCoordType" style="width:70%;">
+            <option value="EPSG3857">EPSG3857 (Google Mercator)</option>
+            <option value="WGS84GEO">WGS84GEO (경위도) </option>
+            <option value="KATECH">KATECH (한국 표준) </option>
+            <option value="BESSEL">BESSEL</option>
+            <option value="BESSELGEO">BESSELGEO</option>
+            <option value="BESSELTM">BESSELTM</option>
+            <option value="GRS80GEO">GRS80GEO</option>
+            <option value="GRS80TM">GRS80TM</option>
+        </select><br>
+        <label for="node-input-afterCoordType"><i class="fa fa-globe"></i> 변환후 좌표계</label>
+        <select type="text" id="node-input-afterCoordType" style="width:70%;">
+            <option value="EPSG3857">EPSG3857 (Google Mercator)</option>
+            <option value="WGS84GEO" selected=true>WGS84GEO (경위도) </option>
+            <option value="KATECH">KATECH (한국 표준) </option>
+            <option value="BESSEL">BESSEL</option>
+            <option value="BESSELGEO">BESSELGEO</option>
+            <option value="BESSELTM">BESSELTM</option>
+            <option value="GRS80GEO">GRS80GEO</option>
+            <option value="GRS80TM">GRS80TM</option>
+        </select>
+    </div>
+    <div class="form-row" id="coordType">
+        <label for="node-input-coordType"><i class="fa fa-globe"></i> 좌표계</label>
+        <select type="text" id="node-input-coordType" style="width:70%;">
+            <option value="EPSG3857">EPSG3857 (Google Mercator)</option>
+            <option value="WGS84GEO">WGS84GEO (경위도) </option>
+            <option value="KATECH">KATECH (한국 표준) </option>
+            <option value="BESSEL">BESSEL</option>
+            <option value="BESSELGEO">BESSELGEO</option>
+            <option value="BESSELTM">BESSELTM</option>
+            <option value="GRS80GEO">GRS80GEO</option>
+            <option value="GRS80TM">GRS80TM</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="geoCoding">
+    <p>T-Map GeoCoding Module </p>
+    <p>국내 주소를 기반으로 죄표값을 찾습니다. </p>
+    <p>혹은 좌표값을 주소로, 그리고 좌표계간 변환을 지원합니다 </p>
+    <p><b>반드시 appKey를 발급 받아야 합니다.</b> 발급은 <a href="https://developers.skplanetx.com/my-center/app-station/" target="_blank">SK플래닛 개발센터</a>를 통해 받으실 수 있습니다<p>
+    <h5>변환 방식</h5>
+    <ul>
+    <li><b>주소 검색 -> 좌표</b> : 텍스트 형식의 주소를 검색하여, 가장 근사한 값의 좌표를 <code>msg.lat / msg.lon</code>을 통해 반환합니다. </li>
+    <li><b>주소 -> 좌표</b> : 주소를 행정구분에 맞게 입력하여, 가장 근사한 값의 좌표를 <code>msg.lat / msg.lon</code>을 통해 반환합니다. </li>
+    <li><b>좌표 -> 주소</b> : 좌표를 통해, 해당 위치의 주소를 <code>msg.address</code>를 통해 반환합니다 </li>
+    <li><b>좌표계간 변환</b> : 좌표를 다른 좌표계의 값으로 변환하여 <code>msg.lat / msg.lon</code>합니다 </li>
+    </ul>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("geoCoding", {
+        category: "SKT_API",
+        color: "#f44f67",
+        fontColor:"",
+        defaults: {
+            name: {value: ""},
+            method: {value: "f"},
+            appKey: {value:"", required:true, type: "tmapAppKey"},
+            // full text address
+            fullAddr: {value:""},
+            fullAddrType: {value:"str"},
+            // address
+            city_do: {value:""},
+            city_doType: {value:"str"},
+            gu_gun: {value:""},
+            gu_gunType: {value:"str"},
+            dong: {value:""},
+            dongType: {value:"str"},
+            bunji: {value:""},
+            bunjiType: {value:"str"},
+            detailAddress: {value:""},
+            detailAddressType: {value:"str"},
+            addressFlag:{value:"F02"},
+            // lat, lon
+            lat: {value:""},
+            latType: {value:"str"},
+            lon: {value:""},
+            lonType: {value:"str"},
+            // coordType
+            beforeCoordType: {value:"EPSG3857"},
+            afterCoordType: {value:"WGS84GEO"},
+            coordType: {value:"EPSG3857"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "tmap.png",
+        label: function() {
+            return this.name||"좌표 변환";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+            function initTypedInput(inputName) {
+                $(inputName).typedInput({
+                    default: 'str',
+                    types: ['msg', 'str'],
+                    typeField: $(inputName + "Type")
+                });
+            }
+
+            ["fullAddr", "city_do", "gu_gun", "dong", "bunji", "detailAddress", "lat", "lon"].forEach(function(v) {
+                initTypedInput("#node-input-" + v);
+            });
+
+            $('#node-input-method').change(function () {
+                var v = $('#node-input-method').val();
+                $('#fullAddr').hide();
+                $('#toGeo').hide();
+                $('#toAddr').hide();
+                $('#transfer').hide();
+                $('#coordType').show();
+
+                switch (v) {
+                    case "f":
+                        $('#fullAddr').show();
+                        break;
+                    case "g":
+                        $('#toGeo').show();
+                        break;
+                    case "r":
+                        $('#toAddr').show();
+                        break;
+                    case "t":
+                        $('#toAddr').show();
+                        $('#transfer').show();
+                        $('#coordType').hide();
+
+                }
+            })
+
+        },
+        paletteLabel: "GeoCoding",
+        align: "right"
+    });
+</script>
+
+<!-- AddressConvertor Start -->
+<script type="text/x-red" data-template-name="addressConverter">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row label-bottom-margin" >
+        <label for="node-input-convert"><i class="fa fa-exchange"></i> 변환 방식</label>
+        <select type="text" id="node-input-convert" style="width:70%;">
+            <option value="OtoN">구주소 -> 신주소</option>
+            <option value="NtoO">신주소 -> 구주소</option>
+        </select><br>
+        <label for="node-input-appKey"><i class="fa fa-key"></i> appKey</label>
+        <input type="text" id="node-input-appKey"><br>
+        <label for="node-input-reqAdd"><i class="fa fa-home"></i> 주소</label>
+        <input type="text" id="node-input-reqAdd" style="width:70%" placeholder="서울시 중구 을지로2가 11번지">
+        <input type="hidden" id="node-input-reqAddType"><br>
+        <label for="node-input-coordType"><i class="fa fa-globe"></i> 좌표계</label>
+        <select type="text" id="node-input-coordType" style="width:70%;">
+            <option value="EPSG3857">EPSG3857 (Google Mercator)</option>
+            <option value="WGS84GEO">WGS84GEO (경위도) </option>
+            <option value="KATECH">KATECH (한국 표준) </option>
+            <option value="BESSEL">BESSEL</option>
+            <option value="BESSELGEO">BESSELGEO</option>
+            <option value="BESSELTM">BESSELTM</option>
+            <option value="GRS80GEO">GRS80GEO</option>
+            <option value="GRS80TM">GRS80TM</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="addressConverter">
+    <p>T-Map 주소 변환 </p>
+    <p>구주소(번지)와 신주소(도로명)를 상호 변환합니다 </p>
+    <p>변환된 값은 <code>msg.address</code>를 통해 반환합니다</p>
+    <p><b>Note: </b>일부 구주소의 경우 신주소가 없는 경우가 있습니다. 유의하시기 바랍니다.</p>
+    <p><b>반드시 appKey를 발급 받아야 합니다.</b> 발급은 <a href="https://developers.skplanetx.com/my-center/app-station/" target="_blank">SK플래닛 개발센터</a>를 통해 받으실 수 있습니다<p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("addressConverter", {
+        category: "SKT_API",
+        color: "#f28c9a",
+        fontColor: "",
+        defaults: {
+            name: {value: ""},
+            convert: {value: "OtoN"},
+            appKey: {value:"", required:true, type: "tmapAppKey"},
+            reqAdd: {value: ""},
+            reqAddType: {value: "str"},
+            coordType: {value: "EPSG3857"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "tmap.png",
+        label: function () {
+            return this.name || "신/구 주소 변환";
+        },
+        labelStyle: function () {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function () {
+            $("#node-input-reqAdd").typedInput({
+                default: 'str',
+                types: ['msg', 'str'],
+                typeField: $("#node-input-reqAddType")
+            });
+        },
+        paletteLabel: "Address&nbsp;Change",
+        align: "right"
+    });
+</script>
+
+<!-- TMapTemplate Start -->
+<script type="text/x-red" data-template-name="tmapTemplate">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row label-bottom-margin" >
+        <label for="node-input-appKey"><i class="fa fa-key"></i> appKey</label>
+        <input type="text" id="node-input-appKey"><br>
+        <label for="node-input-lat"><i class="fa fa-arrows-v"></i> 위도</label>
+        <input type="text" id="node-input-lat" style="width:70%;" placeholder="4518364.824698">
+        <input type="hidden" id="node-input-latType"><br>
+        <label for="node-input-lon"><i class="fa fa-arrows-h"></i> 경도</label>
+        <input type="text" id="node-input-lon" style="width:70%;" placeholder="14135919.787278">
+        <input type="hidden" id="node-input-lonType">
+        <label for="node-input-coordType"><i class="fa fa-globe"></i> 좌표계</label>
+        <select type="text" id="node-input-coordType" style="width:70%;">
+            <option value="EPSG3857">EPSG3857 (Google Mercator)</option>
+            <option value="WGS84GEO">WGS84GEO (경위도) </option>
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="tmapTemplate">
+    <p>T-Map 템플릿 </p>
+    <p>위, 경도. appKey를 입력받아 T-Map 으로 보여주는 간단한 Template입니다</p>
+    <p><code>msg.payload</code>로 반환하므로, HTTP response를 연결하여 쉽게 T-Map Template을 확인하실 수 있습니다</p>
+    <p><b>반드시 appKey를 발급 받아야 합니다.</b> 발급은 <a href="https://developers.skplanetx.com/my-center/app-station/" target="_blank">SK플래닛 개발센터</a>를 통해 받으실 수 있습니다<p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("tmapTemplate", {
+        category: "SKT_API",
+        color: "#ab4252",
+        fontColor: "",
+        defaults: {
+            name: {value: ""},
+            appKey: {value:"", required:true, type: "tmapAppKey"},
+            lat: {value: ""},
+            latType: {value: "str"},
+            lon: {value: ""},
+            lonType: {value: "str"},
+            coordType: {value: "EPSG3857"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "tmap.png",
+        label: function () {
+            return this.name || "T-Map Template";
+        },
+        labelStyle: function () {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function () {
+            $("#node-input-lat").typedInput({
+                default: 'str',
+                types: ['msg', 'str'],
+                typeField: $("#node-input-latType")
+            });
+            $("#node-input-lon").typedInput({
+                default: 'str',
+                types: ['msg', 'str'],
+                typeField: $("#node-input-lonType")
+            });
+        },
+        paletteLabel: "T&#45;Map&nbsp;Template",
+        align: "right"
+    });
+</script>
+
+<script type="text/x-red" data-template-name="tmapAppKey">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="config name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-key"><i class="fa fa-key"></i> AppKey</label>
+        <input type="text" id="node-config-input-key">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="tmapAppKey">
+    <p>API를 호출하기 위한 AppKey입니다. <br>
+    appKey 발급은 <a href="https://developers.skplanetx.com/my-center/app-station/" target="_blank">SK플래닛 개발센터</a>를 통해 받으실 수 있습니다
+     </p>
+</script>
+
+
+<script type="text/javascript">
+    RED.nodes.registerType('tmapAppKey',{
+        category: 'config',
+        defaults: {
+            name : {value:""},
+            key : {value:"", required: true}
+        },
+        label: function() {
+            return this.name || this.key;
+        }
+    });
+</script>

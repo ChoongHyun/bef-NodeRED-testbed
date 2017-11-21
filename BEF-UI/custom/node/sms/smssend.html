@@ -1,0 +1,50 @@
+<script type="text/x-red" data-template-name="SMS Send">
+    <div class="form-row">
+        <label for="node-input-sender"><i class="fa fa-tag"></i> Sender</label>
+        <input type="text" id="node-input-sender" placeholder="msg.sender if Empty">
+    </div>
+    <div class="form-row">
+        <label for="node-input-receiver"><i class="fa fa-tag"></i> Receiver</label>
+        <input type="text" id="node-input-receiver" placeholder="msg.receiber if Empty">
+    </div>
+    <div class="form-row">
+        <label for="node-input-subject"><i class="fa fa-tag"></i>Subject(옵션)</label>
+        <input type="text" id="node-input-subject" placeholder="msg.subject if Empty">
+    </div>
+    <div class="form-row">
+        <label for="node-input-message"><i class="fa fa-tag"></i>Message</label>
+        <input type="text" id="node-input-message" placeholder="msg.message if Empty">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="SMS Send">
+    <p>SMS 를 보냅니다. </p>
+    <p>본 모듈은 개발용도로 1일 10건으로 발송이 제한됩니다. </p>
+    <p>자세한 문서는 <a href="http://t-developers.skt.com" target="_blank">T-Developlers 홈페이지</a>를 참조하시기 바랍니다.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("SMS Send", {
+        category: "SKT_API",
+        color: "#586704",
+        defaults: {
+            sender: {value: ""},
+            receiver: {value: ""},
+            message: {value: ""},
+            subject: {value: ""}
+
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: "sms-icon.png",
+        label: function() {
+            return this.name||"SMS Send";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: "SMS&nbsp;Send",
+        align: "right"
+    });
+
+</script>

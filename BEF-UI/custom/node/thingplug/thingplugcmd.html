@@ -1,0 +1,59 @@
+<script type="text/x-red" data-template-name="ThingPlug Command">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-tpconfig"><i class="fa fa-plug"></i> ThingPlug</label>
+        <input type="text" id="node-input-tpconfig">
+    </div>
+    <div class="form-row">
+        <label for="node-input-ukey"><i class="fa fa-user"></i> uKey</label>
+        <input type="text" id="node-input-ukey" placeholder="uKey">
+    </div>
+    <div class="form-row">
+        <label for="node-input-nodeid"><i class="fa fa-podcast"></i> deviceId</label>
+        <input type="text" id="node-input-nodeid" placeholder="nodeId">
+    </div>
+    <div class="form-row">
+        <label for="node-input-cmt"><i class="fa fa-terminal"></i> Command Type </label>
+        <input type="text" id="node-input-cmt" placeholder="Command Type">
+    </div>
+    <div class="form-row">
+        <label for="node-input-cmd"><i class="fa fa-terminal"></i> Command </label>
+        <input type="text" id="node-input-cmd" placeholder="msg.cmd if empty">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="ThingPlug Command">
+    <p>ThingPlug로 제어 명령을 보냅니다.  </p>
+    <p>Command 값이 비어있는 경우, <code>msg.cmd</code>로 대체 됩니다.</p>
+    <p>자세한 문서는 <a href="http://thingplug.sktiot.com" target="_blank">ThingPlug 홈페이지</a>를 참조하시기 바랍니다.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("ThingPlug Command", {
+        category: "SKT_API",
+        color: "#a2885f",
+        defaults: {
+            name: {value: ""},
+            tpconfig: {type:"tp-config", required:true},
+            ukey: {value: "", required: true},
+            nodeid: {value: "", required: true},
+            cmt:{value:"extDevMgmt", required: true},
+            cmd:{value: ""}
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: "thingplug-icon.png",
+        label: function() {
+            return this.name||"ThingPlug Command";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: "ThingPlug Command",
+        align: "right"
+    });
+
+</script>
