@@ -27,6 +27,11 @@ module.exports = {
         response.redirect(302, portalUrl + nodeRedUrl );
     },
     getToken: function(){
+
+        console.log('portalTokenJson =====================================================');
+        console.log( portalTokenJson );
+        console.log('portalTokenJson =====================================================');
+
         return portalTokenJson;
     },
     setToken: function( appParam, name, token ){
@@ -72,9 +77,22 @@ module.exports = {
                 if (error != null) {
                     return errorPage(response);
                 }
+
+
+                console.log('body=====================================================');
+                console.log( body );
+                console.log('body=====================================================');
+
+
                 // response body return은 boolean 값
                 if (body == true) {
+
                     user = decodeToken(cookie, appParam);
+
+                    console.log('user=====================================================');
+                    console.log( user );
+                    console.log('user=====================================================');
+
                 } else {
                     // cookie 값이 변조되었을 경우 noauth
                     this.removeUserRole();
@@ -108,6 +126,12 @@ module.exports = {
 function decodeToken( token, appParam ){
 	var decode = new Buffer(token, 'base64');
 	var decodeValue = decode.toString('utf8');
+
+	console.log('decodeValue=====================================================');
+	console.log( decodeValue );
+	console.log('decodeValue=====================================================');
+
+
 	return findRole(decodeValue, appParam);
 }
 //

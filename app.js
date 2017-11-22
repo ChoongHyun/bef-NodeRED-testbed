@@ -165,6 +165,7 @@ app.get(restrictUrl, function(req,res,next){
 
     // appParam 없을 경우
     if( appParam == null ){
+
         settings.adminAuth.getApplicationId(path, nodeRedUrl, res);
         // ---redirect 함--- //
     }
@@ -177,12 +178,25 @@ app.get(restrictUrl, function(req,res,next){
         res.cookie(tokenJson.name, tokenJson.value);
         settings.adminAuth.clearToken();
     }
+
+    console.log('value =====================================================');
+    console.log(appParam);
+    console.log('');
+    console.log(cookie);
+    console.log('');
+    console.log('value =====================================================');
+
+
     // appId, cookie 또는 token 값 있을 경우
     if( appParam != null && cookie != null && (cookie['bef-login-token'] != null || cookie.name == 'bef-login-token') ){
         // token 값 validation
         settings.adminAuth.checkValidation(cookie, nodeRedUrl, appParam, path, res, next);
         // ---다시 안돌아옴--- //
     }else{
+
+        console.log('redirect =====================================================');
+        console.log('redirect =====================================================');
+
         res.redirect(302, '/noauth');
     }
 });
