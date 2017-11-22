@@ -24,10 +24,10 @@ var bodyParser = require('body-parser');
 // Create a server
 // var server = http.createServer(app);
 const options = {
-    // key: fs.readFileSync('/usr/src/node-red/BEF-server/star_bef_exntu_net.key'),
-    key: fs.readFileSync('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-server/star_bef_exntu_net.key'),
-    // cert: fs.readFileSync('/usr/src/node-red/BEF-server/star_bef_exntu_net.crt')
-    cert: fs.readFileSync('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-server/star_bef_exntu_net.crt')
+    key: fs.readFileSync('/usr/src/node-red/BEF-server/star_bef_exntu_net.key'),
+    // key: fs.readFileSync('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-server/star_bef_exntu_net.key'),
+    cert: fs.readFileSync('/usr/src/node-red/BEF-server/star_bef_exntu_net.crt')
+    // cert: fs.readFileSync('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-server/star_bef_exntu_net.crt')
 };
 var server = https.createServer(options,app);
 
@@ -145,7 +145,7 @@ var restrictUrl = [];
 // restrictUrl.push('*');
 restrictUrl.push('/');
 // restrictUrl.push('*/settings');
-// restrictUrl.push('*/auth/*');
+restrictUrl.push('*/auth/*');
 //restrictUrl.push('*/flows');
 // restrictUrl.push('*/flow');
 // restrictUrl.push('*/flow/*');
