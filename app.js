@@ -124,7 +124,7 @@ app.use(bodyParser.json());
 // custom 된 JSON 형태도 허용할 경우
 app.use(bodyParser.json({ type: 'application/*+json' }));
 // sso 설정 api
-app.post('/auth/login', function(req,res){
+app.post('/sso', function(req,res){
 
     console.log('POST==============================');
     settings.adminAuth.setToken(req.body.name, req.body.token);
@@ -134,7 +134,7 @@ app.post('/auth/login', function(req,res){
     res.end();
 });
 // sso 삭제 api
-app.delete('/auth/login', function(req,res){
+app.delete('/sso', function(req,res){
     console.log('DELETE==============================');
     settings.adminAuth.removeUserRole();
     settings.adminAuth.clearToken();
@@ -197,10 +197,9 @@ app.get(restrictUrl, function(req,res,next){
         settings.adminAuth.checkValidation(cookie, nodeRedUrl, appParam, path, res, next);
         // ---이후 다시 안돌아옴--- //
     }else{
-
-        console.log('redirect =====================================================');
-
-        res.redirect(302, '/noauth');
+        console.log('redirect1 =====================================================');
+        res.status(401);
+        res.sendFile('/usr/src/node-red/HTML/401page.html');
     }
 });
 
