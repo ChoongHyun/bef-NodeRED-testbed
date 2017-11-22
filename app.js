@@ -125,15 +125,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/*+json' }));
 // sso 설정 api
 app.post('/auth/login', function(req,res){
-    var appParam = req.query['appId'];
-    settings.adminAuth.setToken(appParam, req.body.name, req.body.token);
+
+    console.log('POST==============================');
+    settings.adminAuth.setToken(req.body.name, req.body.token);
+    console.log('POST END==============================');
+
     res.sendStatus(200);
     res.end();
 });
 // sso 삭제 api
 app.delete('/auth/login', function(req,res){
+    console.log('DELETE==============================');
     settings.adminAuth.removeUserRole();
     settings.adminAuth.clearToken();
+    console.log('DELETE END==============================');
     // cookie 이름 bef-login-token 만 삭제
     res.clearCookie('bef-login-token');
     res.sendStatus(204);
@@ -165,17 +170,16 @@ app.get(restrictUrl, function(req,res,next){
 
     // appParam 없을 경우
     if( appParam == null ){
-
         settings.adminAuth.getApplicationId(path, nodeRedUrl, res);
-        // ---redirect 함--- //
+        // ---이후 redirect 함--- //
     }
     // POST로 들어온 값 체크
     var tokenJson = settings.adminAuth.getToken();
     // token 값 있을경우 설정
     if( appParam && tokenJson != null && tokenJson.name != null && tokenJson.token != null){
         cookie = tokenJson;
-        res.setHeader( 'Set-Cookie', tokenValue.name + '=' + tokenValue.token );
-        res.cookie(tokenJson.name, tokenJson.value);
+        res.setHeader( 'Set-Cookie', tokenJson.name + '=' + tokenJson.token );
+        res.cookie(tokenJson.name, tokenJson.token);
         settings.adminAuth.clearToken();
     }
 
@@ -191,10 +195,9 @@ app.get(restrictUrl, function(req,res,next){
     if( appParam != null && cookie != null && (cookie['bef-login-token'] != null || cookie.name == 'bef-login-token') ){
         // token 값 validation
         settings.adminAuth.checkValidation(cookie, nodeRedUrl, appParam, path, res, next);
-        // ---다시 안돌아옴--- //
+        // ---이후 다시 안돌아옴--- //
     }else{
 
-        console.log('redirect =====================================================');
         console.log('redirect =====================================================');
 
         res.redirect(302, '/noauth');
