@@ -36,99 +36,71 @@ module.exports = {
                 token: portalTokenValue
             };
         }
-        console.log('portalTokenJson =====================================================');
-        console.log( portalTokenJson );
-        console.log('portalTokenJson =====================================================');
         return result;
     },
     setToken: function( name, token ){
-        console.log('setToken =====================================================');
         portalTokenName = name;
         portalTokenValue = token;
         portalTokenJson = {
             name : name,
             token : token
         }
-        console.log(portalTokenName, portalTokenValue);
-        console.log(portalTokenJson);
-        console.log('setToken =====================================================');
     },
     // cookie validation
     checkValidation: function( cookie, nodeRedUrl, appParam, path, response, next ) {
-        // applicationId가 있는데 bef-login-token 유무
-        if (cookie['bef-login-token'] != null || cookie.token != null) {
-            // cookie 값 형태 -> 'eyJhbGciOiJSUzI1NiJ9.eyJzdWJfc3JjIjoiTkFUSVZFIiwicmVhZF93cyI6W10sInN1YiI6ImFkbWluMDEiLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlzcyI6InNrdC5wbGF5Iiwib3duZWRfYXBwIjpbMjc4LDI3NSwyNzcsMjc2LDI2OCwyNjksMjY0LDI2NiwyNjUsMjYwLDI2MSwyMTcsMzM4LDIxNiwzMzcsMjE5LDIxOCwxNzksMjEyLDMzMywyMTUsMzM2LDIxNCwzMzUsMTc2LDE3NSwxNzgsMjExLDMzMiwxNzcsMjEwLDMzMSwxNzIsMTc0LDE3MywxNzAsMjA5LDIwNiwyMDgsMjA3LDE2OSwxNjgsMjAxLDI4OSwzMjUsMjAzLDE2NSwyODYsMjg1LDIwMCwyODgsMjgyLDI4NCwyODMsMjM1LDIzNCwyMzcsMjM2LDE5OCwyMzEsMTk3LDIzMCwyMzMsMTk5LDIzMiwxOTQsMTkzLDE5NiwxOTUsMTkwLDE5MiwxOTEsMjI4LDIyNywyMjksMjI0LDIyMywyMjUsMTg3LDIyMCwxODYsMTg5LDIyMiwxODgsMjIxLDE4MywxODIsMTg1LDE4NCwxODEsMTgwLDI1NywyNTYsMjU4LDI1MiwyNTUsMjUxLDI0NiwyNDUsMjQ3LDI0MiwyNDQsMjQzXSwid3JpdGVfd3MiOls3MF0sIm93bmVkX3dzIjpbMTA0LDEwNSwxMDYsMTA3LDEwOCwxMTIsMTEzLDExNCwxMTUsMTE2LDExNywxMTgsMTE5LDExMCwxMTEsMTA5LDcxLDcyLDczLDc0LDc5LDc1LDc2LDc3LDc4LDY5LDY1LDEyMywxMjQsMTI1LDEyNiwxMjcsOTIsMTIwLDEyMSwxMjIsODBdLCJ3cml0ZV9hcHAiOlsxNzFdLCJzdWJfdWlkIjo1LCJzdWJfdHlwZSI6IlVTRVIiLCJyZWFkX2FwcCI6W10sImV4cCI6MTUwODI5MDk0OSwiaWF0IjoxNTA4MjA0NTQ5LCJqdGkiOiI2OTkifQ.DcKyaNYrpBQGXFHYSbvEA0-JGKdE1SrrWiR2fniCzP7w0j2Wf2q22AqWOFFJNcEPe2XmA5A-YZuxRnxrhX-CTw';
-            // 이유는 모르나 string으로 변환 후 다시 json parse
-            cookie = JSON.stringify(cookie);
-            cookie = JSON.parse(cookie);
+        // cookie 값 형태 -> 'eyJhbGciOiJSUzI1NiJ9.eyJzdWJfc3JjIjoiTkFUSVZFIiwicmVhZF93cyI6W10sInN1YiI6ImFkbWluMDEiLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlzcyI6InNrdC5wbGF5Iiwib3duZWRfYXBwIjpbMjc4LDI3NSwyNzcsMjc2LDI2OCwyNjksMjY0LDI2NiwyNjUsMjYwLDI2MSwyMTcsMzM4LDIxNiwzMzcsMjE5LDIxOCwxNzksMjEyLDMzMywyMTUsMzM2LDIxNCwzMzUsMTc2LDE3NSwxNzgsMjExLDMzMiwxNzcsMjEwLDMzMSwxNzIsMTc0LDE3MywxNzAsMjA5LDIwNiwyMDgsMjA3LDE2OSwxNjgsMjAxLDI4OSwzMjUsMjAzLDE2NSwyODYsMjg1LDIwMCwyODgsMjgyLDI4NCwyODMsMjM1LDIzNCwyMzcsMjM2LDE5OCwyMzEsMTk3LDIzMCwyMzMsMTk5LDIzMiwxOTQsMTkzLDE5NiwxOTUsMTkwLDE5MiwxOTEsMjI4LDIyNywyMjksMjI0LDIyMywyMjUsMTg3LDIyMCwxODYsMTg5LDIyMiwxODgsMjIxLDE4MywxODIsMTg1LDE4NCwxODEsMTgwLDI1NywyNTYsMjU4LDI1MiwyNTUsMjUxLDI0NiwyNDUsMjQ3LDI0MiwyNDQsMjQzXSwid3JpdGVfd3MiOls3MF0sIm93bmVkX3dzIjpbMTA0LDEwNSwxMDYsMTA3LDEwOCwxMTIsMTEzLDExNCwxMTUsMTE2LDExNywxMTgsMTE5LDExMCwxMTEsMTA5LDcxLDcyLDczLDc0LDc5LDc1LDc2LDc3LDc4LDY5LDY1LDEyMywxMjQsMTI1LDEyNiwxMjcsOTIsMTIwLDEyMSwxMjIsODBdLCJ3cml0ZV9hcHAiOlsxNzFdLCJzdWJfdWlkIjo1LCJzdWJfdHlwZSI6IlVTRVIiLCJyZWFkX2FwcCI6W10sImV4cCI6MTUwODI5MDk0OSwiaWF0IjoxNTA4MjA0NTQ5LCJqdGkiOiI2OTkifQ.DcKyaNYrpBQGXFHYSbvEA0-JGKdE1SrrWiR2fniCzP7w0j2Wf2q22AqWOFFJNcEPe2XmA5A-YZuxRnxrhX-CTw';
+        // 이유는 모르나 string으로 변환 후 다시 json parse
+        cookie = JSON.stringify(cookie);
+        cookie = JSON.parse(cookie);
 
-            // portal 에 아래 값 형태로 body에 적용:
-            /*
-             {
-                 "name" : "bef-login-token",
-                 "token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWJfc3JjIjoiTkFUSVZFIiwicmVhZF93cyI6W10sInN1YiI6ImFkbWluMDEiLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlzcyI6InNrdC5wbGF5Iiwib3duZWRfYXBwIjpbMjc4LDI3NSwyNzcsMjc2LDI2OCwyNjksMjY0LDI2NiwyNjUsMjYwLDI2MSwyMTcsMzM4LDIxNiwzMzcsMjE5LDIxOCwxNzksMjEyLDMzMywyMTUsMzM2LDIxNCwzMzUsMTc2LDE3NSwxNzgsMjExLDMzMiwxNzcsMjEwLDMzMSwxNzIsMTc0LDE3MywxNzAsMjA5LDIwNiwyMDgsMjA3LDE2OSwxNjgsMjAxLDI4OSwzMjUsMjAzLDE2NSwyODYsMjg1LDIwMCwyODgsMjgyLDI4NCwyODMsMjM1LDIzNCwyMzcsMjM2LDE5OCwyMzEsMTk3LDIzMCwyMzMsMTk5LDIzMiwxOTQsMTkzLDE5NiwxOTUsMTkwLDE5MiwxOTEsMjI4LDIyNywyMjksMjI0LDIyMywyMjUsMTg3LDIyMCwxODYsMTg5LDIyMiwxODgsMjIxLDE4MywxODIsMTg1LDE4NCwxODEsMTgwLDI1NywyNTYsMjU4LDI1MiwyNTUsMjUxLDI0NiwyNDUsMjQ3LDI0MiwyNDQsMjQzXSwid3JpdGVfd3MiOls3MF0sIm93bmVkX3dzIjpbMTA0LDEwNSwxMDYsMTA3LDEwOCwxMTIsMTEzLDExNCwxMTUsMTE2LDExNywxMTgsMTE5LDExMCwxMTEsMTA5LDcxLDcyLDczLDc0LDc5LDc1LDc2LDc3LDc4LDY5LDY1LDEyMywxMjQsMTI1LDEyNiwxMjcsOTIsMTIwLDEyMSwxMjIsODBdLCJ3cml0ZV9hcHAiOlsxNzFdLCJzdWJfdWlkIjo1LCJzdWJfdHlwZSI6IlVTRVIiLCJyZWFkX2FwcCI6W10sImV4cCI6MTUwNzg1ODQ5NCwiaWF0IjoxNTA3NzcyMDk0LCJqdGkiOiI2ODIifQ.JnjnYyXmPkLaCxlf9iHuHnHIJeK6G1o5zTsNJl6lQ4MLDQkY9wXFh-fr8bnH_rAIz6rh_s83ZiN_HtekVvlsuA"
-             }
-             */
-            if (cookie['bef-login-token']) {
-                cookie = {
-                    name: 'bef-login-token',
-                    token: cookie['bef-login-token']
-                }
+        // portal 에 아래 값 형태로 body에 적용:
+        /*
+         {
+             "name" : "bef-login-token",
+             "token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWJfc3JjIjoiTkFUSVZFIiwicmVhZF93cyI6W10sInN1YiI6ImFkbWluMDEiLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlzcyI6InNrdC5wbGF5Iiwib3duZWRfYXBwIjpbMjc4LDI3NSwyNzcsMjc2LDI2OCwyNjksMjY0LDI2NiwyNjUsMjYwLDI2MSwyMTcsMzM4LDIxNiwzMzcsMjE5LDIxOCwxNzksMjEyLDMzMywyMTUsMzM2LDIxNCwzMzUsMTc2LDE3NSwxNzgsMjExLDMzMiwxNzcsMjEwLDMzMSwxNzIsMTc0LDE3MywxNzAsMjA5LDIwNiwyMDgsMjA3LDE2OSwxNjgsMjAxLDI4OSwzMjUsMjAzLDE2NSwyODYsMjg1LDIwMCwyODgsMjgyLDI4NCwyODMsMjM1LDIzNCwyMzcsMjM2LDE5OCwyMzEsMTk3LDIzMCwyMzMsMTk5LDIzMiwxOTQsMTkzLDE5NiwxOTUsMTkwLDE5MiwxOTEsMjI4LDIyNywyMjksMjI0LDIyMywyMjUsMTg3LDIyMCwxODYsMTg5LDIyMiwxODgsMjIxLDE4MywxODIsMTg1LDE4NCwxODEsMTgwLDI1NywyNTYsMjU4LDI1MiwyNTUsMjUxLDI0NiwyNDUsMjQ3LDI0MiwyNDQsMjQzXSwid3JpdGVfd3MiOls3MF0sIm93bmVkX3dzIjpbMTA0LDEwNSwxMDYsMTA3LDEwOCwxMTIsMTEzLDExNCwxMTUsMTE2LDExNywxMTgsMTE5LDExMCwxMTEsMTA5LDcxLDcyLDczLDc0LDc5LDc1LDc2LDc3LDc4LDY5LDY1LDEyMywxMjQsMTI1LDEyNiwxMjcsOTIsMTIwLDEyMSwxMjIsODBdLCJ3cml0ZV9hcHAiOlsxNzFdLCJzdWJfdWlkIjo1LCJzdWJfdHlwZSI6IlVTRVIiLCJyZWFkX2FwcCI6W10sImV4cCI6MTUwNzg1ODQ5NCwiaWF0IjoxNTA3NzcyMDk0LCJqdGkiOiI2ODIifQ.JnjnYyXmPkLaCxlf9iHuHnHIJeK6G1o5zTsNJl6lQ4MLDQkY9wXFh-fr8bnH_rAIz6rh_s83ZiN_HtekVvlsuA"
+         }
+         */
+        if (cookie['bef-login-token']) {
+            cookie = {
+                name: 'bef-login-token',
+                token: cookie['bef-login-token']
             }
-            var options = {
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                json: {
-                    'name': cookie.name,
-                    'token': cookie.token
-                }
-            }
-            // POST 로 cookie 값 체크 (portal 에서 return 은 boolean 값)
-            request.post(validationUrl + '/' + appParam + '?url=' + nodeRedUrl, options, function (error, res, body) {
-                // server check
-                if (error != null) {
-                    return errorPage(response);
-                }
-
-
-                console.log('body=====================================================');
-                console.log( body );
-                console.log('body=====================================================');
-
-
-                // response body return은 boolean 값
-                if (body == true) {
-
-                    user = decodeToken(cookie, appParam);
-
-                    console.log('user=====================================================');
-                    console.log( user );
-                    console.log('user=====================================================');
-
-                } else {
-                    console.log('POST ELSE=====================================================');
-                    // cookie 값이 변조되었을 경우 noauth
-                    this.removeUserRole();
-                    this.clearToken();
-                    response.clearCookie('bef-login-token');
-                    return noauthPage(response);
-                }
-            });
         }
-        // middleware bypass
-        console.log('NEXT BYPASS=====================================================');
-        next();
+        var options = {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            json: {
+                'name': cookie.name,
+                'token': cookie.token
+            }
+        }
+        // POST 로 cookie 값 체크 (portal 에서 return 은 boolean 값)
+        request.post(validationUrl + '/' + appParam + '?url=' + nodeRedUrl, options, function (error, res, body) {
+            // server check
+            if (error != null) {
+                return errorPage(response);
+            }
+            // response body return은 boolean 값
+            if (body == true) {
+                user = decodeToken(cookie.token, appParam);
+                next();
+            } else {
+                // cookie 값이 변조되었을 경우 noauth
+                this.removeUserRole();
+                this.clearToken();
+                response.clearCookie('bef-login-token');
+                return noauthPage(response);
+            }
+        });
     },
     removeUserRole: function(){
-        console.log('removeUserROle=====================================================');
         user = null;
         return when.promise(function(resolve) {
             resolve(null);
         });
     },
     clearToken: function(){
-        console.log('clearToken=====================================================');
         portalTokenJson = {};
         portalTokenName = null;
         portalTokenValue = null;
@@ -136,9 +108,6 @@ module.exports = {
 
     // nodeRED 제공
     default: function() {
-        console.log('default=====================================================');
-        console.log(user);
-        console.log('default END=====================================================');
         return when.promise(function(resolve) {
             resolve(user);
         });
@@ -148,12 +117,9 @@ module.exports = {
 function decodeToken( token, appParam ){
 	var decode = new Buffer(token, 'base64');
 	var decodeValue = decode.toString('utf8');
-
-	console.log('decodeValue=====================================================');
-	console.log( decodeValue );
-	console.log('decodeValue=====================================================');
-
-
+	console.log('==================================');
+	console.log(decodeValue);
+	console.log('==================================');
 	return findRole(decodeValue, appParam);
 }
 //
