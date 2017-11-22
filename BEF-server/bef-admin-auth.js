@@ -13,6 +13,7 @@ var readWriteRole = { username: 'BEF', permissions: '*' };
 var readOnlyRole = { anonymous: true, permissions: 'read' };
 var portalTokenName = null;
 var portalTokenValue = null;
+var portalTokenJson = {};
 
 var portalUrl = 'https://www.bef.exntu.net/app/designer/sso?url=';
 // var portalUrl = 'http://192.168.1.20:4200/app/designer/sso?url=';
