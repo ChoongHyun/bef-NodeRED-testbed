@@ -187,6 +187,7 @@ app.get(restrictUrl, function(req,res,next){
             // res.sendFile('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/HTML/401page.html');
         }
     }
+    // next();
 });
 
 /**

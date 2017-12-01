@@ -117,9 +117,6 @@ module.exports = {
 function decodeToken( token, appParam ){
 	var decode = new Buffer(token, 'base64');
 	var decodeValue = decode.toString('utf8');
-	console.log('==================================');
-	console.log(decodeValue);
-	console.log('==================================');
 	return findRole(decodeValue, appParam);
 }
 //
