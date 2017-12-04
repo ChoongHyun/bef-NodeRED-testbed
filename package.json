@@ -17,8 +17,6 @@
     "when": "^3.7.8",
     "request": "^2.81.0",
     "express-session": "^1.15.3",
-    "sync-request": "^4.1.0",
-    "then-request": "^4.1.0",
     "http": "^0.0.0",
     "url": "^0.11.0",
 
@@ -38,9 +36,7 @@
     "hash-sum":"1.0.2",
     "jsonwebtoken": "^8.0.1",
     "ws": "1.1.1",
-    "cookies": "^0.7.1",
-    "fs" : "^0.0.1-security",
-    "https" : "^1.0.0"
+    "cookies": "^0.7.1"
   },
   "engines": {
     "node": "6.*.*"

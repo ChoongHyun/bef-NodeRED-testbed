@@ -3,10 +3,6 @@
  */
 // http
 var http = require('http');
-// https
-const https = require('https');
-// files
-const fs = require('fs');
 // node.js http와 connect 컴포넌트 기반의 웹 프레임워크
 var express = require('express');
 // request
@@ -22,14 +18,7 @@ var cookieParser = require('cookie-parser');
 // http body 영역
 var bodyParser = require('body-parser');
 // Create a server
-// var server = http.createServer(app);
-const options = {
-    key: fs.readFileSync('/usr/src/node-red/BEF-server/star_bef_exntu_net.key'),
-    // key: fs.readFileSync('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-server/star_bef_exntu_net.key'),
-    cert: fs.readFileSync('/usr/src/node-red/BEF-server/star_bef_exntu_net.crt')
-    // cert: fs.readFileSync('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-server/star_bef_exntu_net.crt')
-};
-var server = https.createServer(options,app);
+var server = http.createServer(app);
 
 /**
  * NodeRED settings 영역
@@ -42,10 +31,8 @@ var settings = {
     httpNodeRoot: '/',
     // 해당 node-red의 settings.js를 이용 경로 설정 & 저장 경로
     userDir:'/usr/src/node-red/',
-    // userDir:'/Users/choong/Downloads/NodeRED/save/',
     // custom node
     nodesDir: '/usr/src/node-red/BEF-UI/custom/node/',
-    // nodesDir: '/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-UI/custom/node/',
     // admin auth
     adminAuth: require('./BEF-server/bef-admin-auth.js'),
     // category 순서
@@ -67,10 +54,8 @@ var settings = {
             title: 'sketch',
             // UI CSS
             css: "/usr/src/node-red/BEF-UI/custom/css/bef-ui-white.css",
-            // css: "/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-UI/custom/css/bef-ui-white.css",
             // UI scripts
             scripts: '/usr/src/node-red/BEF-UI/custom/js/bef-js.js'
-            // scripts: '/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/BEF-UI/custom/js/bef-js.js'
         },
         userMenu: false
     },
@@ -105,7 +90,7 @@ var settings = {
             audit: false
         }
     }
-    // ,flowFile: '/usr/src/node-red/flows.json'
+    ,flowFile: '/usr/src/node-red/flows.json'
 };
 
 /**
@@ -131,13 +116,18 @@ app.post('/auth/login', function(req,res){
 });
 // sso 삭제 api
 app.delete('/auth/login', function(req,res){
-    settings.adminAuth.removeUserRole();
-    settings.adminAuth.clearToken();
     // cookie 이름 bef-login-token 만 삭제
     res.clearCookie('bef-login-token');
+
+    settings.adminAuth.clearToken();
+    settings.adminAuth.removeUserRole();
+    
     res.sendStatus(204);
     res.end();
 });
+
+// proxy 밖의client ip를 얻기 위함
+app.set('trust proxy', true);
 
 // 해당 url로 들어오는 부분은 auth 체크
 // [/, /vendor, /red, /theme, /static, /locales, /settings, /library, /nodes, /debug, /ui_base, /uisettings, /flows, /icons]
@@ -184,7 +174,6 @@ app.get(restrictUrl, function(req,res,next){
         }else{
             res.status(401);
             res.sendFile('/usr/src/node-red/HTML/401page.html');
-            // res.sendFile('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/HTML/401page.html');
         }
     }
     // next();
@@ -215,25 +204,21 @@ app.use(settings.httpNodeRoot,RED.httpNode);
 app.get( ['/noauth','auth/login'], function(req,res){
     res.status(401);
     res.sendFile('/usr/src/node-red/HTML/401page.html');
-    // res.sendFile('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/HTML/401page.html');
 });
 // 에러 페이지
 app.get('/error', function(req,res){
     res.status(500);
     res.sendFile('/usr/src/node-red/HTML/500page.html');
-    // res.sendFile('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/HTML/500page.html');
 });
 // 404 page error 페이지로 넘기는 처리 방법
 app.get('*', function(req,res){
     res.status(404);
     res.sendFile('/usr/src/node-red/HTML/404page.html');
-    // res.sendFile('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/HTML/404page.html');
 });
 app.use(function (err, req, res, next) {
     console.log(err);
     res.status(500);
     res.sendFile('/usr/src/node-red/HTML/500page.html');
-    // res.sendFile('/Users/choong/Downloads/NodeRED/github/bef-NodeRED-testbed/HTML/500page.html');
 });
 
 /**

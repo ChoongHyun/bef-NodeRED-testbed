@@ -23,7 +23,6 @@ COPY package.json /usr/src/node-red/
 COPY app.js /usr/src/node-red/
 
 # create symbolic links for User SSL Certs
-
 #RUN ln -s /bef/nodered/client-ssl/user_cert.pem /usr/src/node-red/user_cert.pem
 #RUN ln -s /bef/nodered/client-ssl/user_key.pem /usr/src/node-red/user_key.pem
 #RUN ln -s /bef/nodered/client-ssl/user_ca.pem /usr/src/node-red/user_ca.pem
@@ -50,3 +49,4 @@ ENV FLOWS=flows.json
 EXPOSE 1880
 
 CMD ["npm", "start"]
+

@@ -16,9 +16,7 @@ var portalTokenValue = null;
 var portalTokenJson = {};
 
 var portalUrl = 'https://www.bef.exntu.net/app/designer/sso?url=';
-// var portalUrl = 'http://192.168.1.20:4200/app/designer/sso?url=';
 var validationUrl = 'http://50.1.111.185:8080/api/v1/check/sso';
-// var validationUrl = 'http://192.168.1.20:8080/api/v1/check/sso';
 
 /**
  * module exports
@@ -79,7 +77,11 @@ module.exports = {
         request.post(validationUrl + '/' + appParam + '?url=' + nodeRedUrl, options, function (error, res, body) {
             // server check
             if (error != null) {
-                return errorPage(response);
+                portalTokenJson = {};
+                portalTokenName = null;
+                portalTokenValue = null;
+                user = null;
+                return errorPage(res);
             }
             // response body return은 boolean 값
             if (body == true) {
@@ -87,10 +89,14 @@ module.exports = {
                 next();
             } else {
                 // cookie 값이 변조되었을 경우 noauth
-                this.removeUserRole();
-                this.clearToken();
-                response.clearCookie('bef-login-token');
-                return noauthPage(response);
+                // this.removeUserRole();
+                // this.clearToken();
+                portalTokenJson = {};
+                portalTokenName = null;
+                portalTokenValue = null;
+                user = null;
+                res.clearCookie('bef-login-token');
+                return noauthPage(res);
             }
         });
     },
