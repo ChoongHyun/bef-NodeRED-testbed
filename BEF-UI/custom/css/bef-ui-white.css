@@ -61,9 +61,24 @@ a:focus {outline-offset:0;}
 #workspace{border-top:0;}
 #workspace{left:239px;right:408px;}
 #workspace-tabs:not(.workspace-focussed){opacity:1}
+#workspace-tabs:not(.workspace-focussed) li.red-ui-tab.active a {font-weight:normal;}
 #sidebar{width:401px;border:1px solid #bbb;border-top:0;border-right:0}
 #editor-stack{right:408px;}
-#workspace-toolbar {top:40px;}
+#workspace-toolbar {padding:7px 20px; top:40px; background:#f4f5fa;}
+#workspace-toolbar .button {border-radius:13px;}
+#workspace-subflow-output-remove,
+#workspace-subflow-output-add {width:24px; padding:2px 5px !important;}
+#workspace-subflow-output-add i:before {position:relative; top:-1px;width:8px; height:8px;
+background: url(/static/BEF-UI/custom/image/node_icon_pluse.png) 0 0 no-repeat; font-size:0;}
+#workspace-subflow-output-remove i::before {position:relative; top:2px; left:2px; content:''; display:inline-block; overflow:hidden; width:13px; height:8px;  background: url(/static/BEF-UI/custom/image/node_icon_minus_sm.png) 0 0 no-repeat;  font-size:0; vertical-align:middle;}
+#workspace-subflow-delete {position:relative;}
+#workspace-subflow-delete i {position:relative; top:-1px; margin-left:4px;}
+#workspace-subflow-output .spinner-value {background:rgba(0,0,0,0); border:none;}
+#workspace-subflow-input-remove {border-radius:13px 0 0 13px !important;}
+#workspace-subflow-input-add {border-radius:0 13px 13px 0 !important;}
+#workspace-subflow-input-add,
+#workspace-subflow-input-remove {width:26px;}
+
 #palette{width:240px;border-top:0!important;border-left:0!important;border:1px solid #e5e5e5;background:#fff;}
 .palette-header{margin-bottom:-1px;padding:10px 20px;text-transform:capitalize;border-bottom:1px solid #e5e5e5;background:transparent;}
 .palette-header i{position:absolute;top:0;right:10px;transform:rotate(-180deg);margin:15px 10px 0 3px;}
@@ -85,11 +100,16 @@ a:focus {outline-offset:0;}
 .red-ui-tabs.red-ui-tabs-scrollable{margin-left:-4px;padding-left:0}
 .red-ui-tabs.red-ui-tabs-add.red-ui-tabs-scrollable{padding-right:0;}
 .red-ui-tab-scroll-left,.red-ui-tab-scroll-right{display:none}
+.red-ui-tabs ul li a.red-ui-tab-label {padding-left:20px; box-sizing:border-box;}
+.red-ui-tab-icon {margin-left:-5px;}
 .red-ui-tabs{height:40px;background:transparent;}
 .red-ui-tabs ul{height:40px;border-bottom:1px solid #e0e0e3}
 .red-ui-tabs ul li{margin:0 0 0 -1px;border:1px solid #e0e0e3;border-top:0;background:#e6e7ec;height:41px;line-height:38px;}
-.red-ui-tabs a.red-ui-tab-close {height:40px !important;}
-.red-ui-tabs a.red-ui-tab-close i {position:relative; top:5px;}
+.red-ui-tabs ul li.active a.red-ui-tab-close {background:#f4f5fa;}
+.red-ui-tabs a.red-ui-tab-close {width:30px; height:40px !important;}
+.red-ui-tabs a.red-ui-tab-close i {position:relative; top:5px; display: inline-block;
+width:13px; height: 13px; background: url(/static/BEF-UI/custom/image/node_icon_close.png) 0 0 no-repeat;}
+.red-ui-tabs a.red-ui-tab-close i::before {font-size:0;}
 .red-ui-tabs ul li.active{background:#f4f5fa;border-bottom: 1px solid #f4f5fa;}
 #sidebar .red-ui-tabs ul li{margin:0;border-left:0;width:50%!important;background:#f4f5fa;}
 #sidebar .red-ui-tabs ul li a{padding-left:0;color:#b0b5b8;text-align:center;text-transform:capitalize}
@@ -202,7 +222,6 @@ code, pre{font-size:12px}
 .palette_port{top:9px!important;border-radius:5px;border-width:2px;background:#fff}
 .palette_label{color:#000;text-transform:capitalize;word-break:break-word;}
 
-#workspace-subflow-output-remove i::before {content:''; display:inline-block; overflow:hidden; width:13px; height:8px;  background: url(/static/BEF-UI/custom/image/node_icon_minus.png) 0 0 no-repeat;  font-size:0; vertical-align:middle;}
 
 /* footer */
 #workspace-footer {border-top:none; background:none; left:auto; bottom:20px;}
